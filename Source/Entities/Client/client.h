@@ -1,0 +1,8 @@
+//
+// Created by andre on 15/05/2026.
+//
+
+#ifndef PRGASSISTENZAUNI_CLIENT_H
+#define PRGASSISTENZAUNI_CLIENT_H
+
+#endif //PRGASSISTENZAUNI_CLIENT_H

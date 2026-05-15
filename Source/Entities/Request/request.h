@@ -1,0 +1,8 @@
+//
+// Created by andre on 15/05/2026.
+//
+
+#ifndef PRGASSISTENZAUNI_REQUEST_H
+#define PRGASSISTENZAUNI_REQUEST_H
+
+#endif //PRGASSISTENZAUNI_REQUEST_H
