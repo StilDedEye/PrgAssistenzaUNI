@@ -1,0 +1,52 @@
+//
+// Created by andre on 15/05/2026.
+//
+
+#ifndef PRGASSISTENZAUNI_INTERFACEBUILDER_H
+    #define PRGASSISTENZAUNI_INTERFACEBUILDER_H
+
+    #include <stdio.h>
+    #include "../../../ExternalLibraries/fort/fort.h"
+    #include "../interfaceConstants.h"
+    #include <stdbool.h>
+
+    #ifdef _WIN32
+        #include <windows.h> // Serve per configurare il terminale su Windows
+    #endif
+
+
+
+    /**
+     * @brief Inizializza l'interfaccia del terminale.
+     * @details Configura il terminale per supportare i caratteri UTF-8, garantendo la corretta visualizzazione di
+     *          simboli e caratteri speciali.
+     * @details Se il sistema operativo è Windows, viene impostato il terminale in Utf-8. Su altri sistemi operativi
+     *          (Linux, macOS) questo viene fatto già di default.
+     */
+    void initialize_terminal(void);
+
+    /**
+     * @brief Pulisce il terminale.
+     * @details Utilizza una combinazione di sequenze escape ANSI per cancellare tutto il testo presente nel terminale e
+     *          riportare il cursore in alto a sinistra (0,0).
+     */
+    void cleanup_terminal(void);
+
+    /**
+     * @brief Costruisce e visualizza la tabella delle richieste.
+     * @details Utilizza la libreria fort per creare una tabella formattata con i dati delle richieste.
+     * Se il parametro cleanupTerminal è true, pulisce il terminale prima
+     * @param cleanupTerminal
+     */
+    void build_table_of_requests(bool cleanupTerminal);
+
+    /**
+     * @brief Costruisce e visualizza la tabella dei clienti.
+     * @details Utilizza la libreria fort per creare una tabella formattata con i dati dei clienti.
+     * Se il parametro cleanupTerminal è true, pulisce il terminale prima
+     * @param cleanupTerminal
+     */
+    void build_table_of_clients(bool cleanupTerminal);
+
+
+#endif
