@@ -6,8 +6,7 @@
 #define PRGASSISTENZAUNI_REQUEST_H
 
 /**
- * @brief Valore restituito dalle funzioni getter delle variabili numeriche
- * in caso di errore
+ * @brief Valore di default per i campi numerici della struttura Request
  */
 #define VAL_UNDEFINED (-2)
 
