@@ -79,6 +79,7 @@ void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
             ft_u8write_ln(table,
                 get_request_id(arr[i]),
                 get_client_id(get_request_client(arr[i])),
+                get_client_name(get_request_client(arr[i])),
                 deviceNames[get_request_device(arr[i])],
                 priorityNames[get_request_priority(arr[i])],
                 requestStatusNames[get_request_status(arr[i])],
