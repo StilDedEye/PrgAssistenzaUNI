@@ -12,6 +12,7 @@
  *  - name: nome del cliente
  */
 typedef struct client Client;
+static const char* clientFieldNames[] = {"ID Cliente", "Nome Cliente"};
 
 /**
  * @brief Crea un nuovo cliente con l'identificativo e il nome specificati
