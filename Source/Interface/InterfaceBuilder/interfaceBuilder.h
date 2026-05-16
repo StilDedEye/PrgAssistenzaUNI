@@ -15,6 +15,8 @@
     #endif
 
 
+    #include "../../Entities/Request/request.h"
+    #include "../../Entities/Client/client.h"
 
     /**
      * @brief Inizializza l'interfaccia del terminale.
@@ -36,11 +38,11 @@
      * @brief Costruisce e visualizza la tabella delle richieste.
      * @details Utilizza la libreria fort per creare una tabella formattata con i dati delle richieste.
      * Se il parametro cleanupTerminal è true, pulisce il terminale prima
-     * // TODO completare params
-     * @param vettore
+     * @param arr Vettore di struct Request
      * @param cleanupTerminal
+     * @see Entities/Request/*
      */
-    void build_requests_table(const char *vettore[], size_t n, bool cleanupTerminal);
+    void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal);
 
     /**
      * @brief Costruisce e visualizza la tabella dei clienti.

@@ -26,7 +26,7 @@
  *  - [struct tm] creationDate: data di creazione della richiesta
  */
 typedef struct request Request;
-static const char* requestFieldNames[] = {"ID Richiesta", "Cliente", "Dispositivo", "Priorità", "Stato", "Descrizione", "Costo Stimato", "Costo Finale", "Data Creazione"};
+static const char* requestFieldNames[] = {"ID Richiesta", "Cliente", "Dispositivo", "Priorita'", "Stato", "Descrizione", "Costo Stimato", "Costo Finale", "Data Creazione"};
 
 /**
  * @brief Crea una nuova richiesta di assistenza con i dati specificati

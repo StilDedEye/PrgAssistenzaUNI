@@ -21,10 +21,10 @@ void cleanup_terminal()
     printf(_ANSI_DELETE_REMAINING);
 }
 
-void build_requests_table(const char *vettore[], size_t n, bool cleanupTerminal)
+void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
 {
-    //TODO Rimpiazza questo vettore con quello nell'header della struct
-    size_t numColonne = 4;
+    // Calcola numero header della tabella
+    size_t cols_number = sizeof(requestFieldNames) / sizeof(char*);
 
     cleanupTerminal ? cleanup_terminal() : printf("\n");
 
@@ -38,7 +38,7 @@ void build_requests_table(const char *vettore[], size_t n, bool cleanupTerminal)
     ft_u8write_ln(table, "ELENCO RICHIESTE DI ASSISTENZA");
 
     // Imposta proprietà celle in posizione [0][0]: imposta cell span
-    ft_set_cell_span(table, 0, 0, numColonne);
+    ft_set_cell_span(table, 0, 0, cols_number);
     // Imposta proprietà celle in posizione [0][0]: imposta colore e allineamento
     ft_set_cell_prop(table, 0, 0, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
     ft_set_cell_prop(table, 0, 0, FT_CPROP_CONT_FG_COLOR, FT_COLOR_MAGENTA);
@@ -48,14 +48,14 @@ void build_requests_table(const char *vettore[], size_t n, bool cleanupTerminal)
     ft_set_cell_prop(table, 1, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
 
     // Scrive i nomi delle colonne (header)
-    ft_row_write_ln( table, numColonne, vettore);
+    ft_row_write_ln( table, cols_number, requestFieldNames);
 
     // Scrive le righe della tabella
     if (n == 0)
     {
         ft_u8write_ln(table, "Nessuna richiesta trovata");
         // Imposta proprietà celle in posizione [1][0]: imposta cell span
-        ft_set_cell_span(table, 2, 0, numColonne);
+        ft_set_cell_span(table, 2, 0, cols_number);
         // Imposta proprietà celle in posizione [1][0]: allinea al centro il contenuto
         ft_set_cell_prop(table, 2, 0, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
         ft_set_cell_prop(table, 2, 0, FT_CPROP_CONT_FG_COLOR, FT_COLOR_RED);
