@@ -41,7 +41,7 @@ void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
     ft_set_cell_span(table, 0, 0, cols_number);
     // Imposta proprietà celle in posizione [0][0]: imposta colore e allineamento
     ft_set_cell_prop(table, 0, 0, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
-    ft_set_cell_prop(table, 0, 0, FT_CPROP_CONT_FG_COLOR, FT_COLOR_MAGENTA);
+    ft_set_cell_prop(table, 0, 0, FT_CPROP_CONT_FG_COLOR, FT_COLOR_RED);
 
 
     // Imposta proprietà celle in posizione [0][*]: il tipo di riga è un header
@@ -62,9 +62,35 @@ void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
     }
     else
     {
-        for (size_t i = 0; i < 3; i++)
+        for (size_t i = 0; i < n; i++)
         {
-            ft_u8write_ln(table, "1", "Server Web", "45 MB");
+            char bufferEstimatedCost[UTIL_FLOAT_PARSER_BUFFER_SIZE];
+            bool hasEstimatedCost = false;
+            if (get_request_estimated_cost(arr[i]) != VAL_UNDEFINED)
+                hasEstimatedCost = true;
+
+            char bufferFinalCost[UTIL_FLOAT_PARSER_BUFFER_SIZE];
+            bool hasFinalCost = false;
+            if (get_request_final_cost(arr[i]) != VAL_UNDEFINED)
+                hasFinalCost = true;
+
+            char bufferDate[UTIL_DATE_PARSER_BUFFER_SIZE];
+
+            ft_u8write_ln(table,
+                get_request_id(arr[i]),
+                get_client_id(get_request_client(arr[i])),
+                deviceNames[get_request_device(arr[i])],
+                priorityNames[get_request_priority(arr[i])],
+                requestStatusNames[get_request_status(arr[i])],
+                get_request_description(arr[i]),
+                hasEstimatedCost ?
+                    parseDoubleFloatToString(bufferEstimatedCost, get_request_estimated_cost(arr[i]))
+                    : "N/A",
+                hasFinalCost ?
+                    parseDoubleFloatToString(bufferFinalCost, get_request_final_cost(arr[i]))
+                    : "N/A",
+                parseDateToString(bufferDate, get_request_creation_date(arr[i]))
+                );
         }
         // Imposta proprietà celle in posizione [*][*]: allinea al centro il contenuto
         ft_set_cell_prop(table, FT_ANY_ROW, FT_ANY_ROW, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
@@ -118,7 +144,7 @@ void print_credits(void) {
 
     // Riga: Corso
     printf("%s| %s%-10s%s%-49s%s|%s\n",
-           YELLOW, YELLOW, "Corso:", WHITE, "Laboratorio di Informatica", YELLOW, RESET);
+           YELLOW, YELLOW, "Corso:", WHITE, "Laboratorio di Informatica | Primo Appello", YELLOW, RESET);
 
     // Riga: Anno
     printf("%s| %s%-10s%s%-49s%s|%s\n",
@@ -126,7 +152,7 @@ void print_credits(void) {
 
     // Riga: System
     printf("%s| %s%-10s%s%-49s%s|%s\n",
-           YELLOW, YELLOW, "System:", WHITE, "Gestione Richieste di Assistenza Tecnica - v1.0", YELLOW, RESET);
+           YELLOW, YELLOW, "Progetto:", WHITE, "Gestione Richieste di Assistenza Tecnica - v1.0", YELLOW, RESET);
 
     printf("%s'------------------------------------------------------------'%s\n", YELLOW, RESET);
     printf("\n");

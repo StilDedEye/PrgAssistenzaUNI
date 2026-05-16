@@ -42,8 +42,8 @@ Request* create_request(const char *requestID, Client *client, Device device, Pr
     request->device = device;
     request->priority = priority;
     request->status = PENDING;
-    request->estimatedCost = estimatedCost;
-    request->finalCost = finalCost;
+    request->estimatedCost = estimatedCost < 0 && estimatedCost != VAL_UNDEFINED ? 0 : estimatedCost;
+    request->finalCost = finalCost < 0 && finalCost != VAL_UNDEFINED ? 0 : finalCost;
     request->creationDate = creationDate;
 
     request->requestID = malloc(strlen(requestID) + 1);
@@ -133,7 +133,7 @@ const char* get_request_description(const Request *request)
 double get_request_estimated_cost(const Request *request)
 {
     if (request == NULL)
-        return GET_ERROR_VALUE;
+        return VAL_UNDEFINED;
 
     return request->estimatedCost;
 }
@@ -141,7 +141,7 @@ double get_request_estimated_cost(const Request *request)
 double get_request_final_cost(const Request *request)
 {
     if (request == NULL)
-        return GET_ERROR_VALUE;
+        return VAL_UNDEFINED;
 
     return request->finalCost;
 }

@@ -28,6 +28,8 @@ add_executable(PrgAssistenzaUNI Source/main.c
         Source/Interface/MenuManager/menuManager.h
         Source/Entities/RequestList/requestList.c
         Source/Entities/RequestList/requestList.h
+        Source/Utilities/util.c
+        Source/Utilities/util.h
 )
 
 # Stilded PROGRAMMA DI TEST PER L'INTERFACCIA
@@ -39,7 +41,16 @@ add_executable(TestSteeldead
         Source/Interface/InterfaceBuilder/InterfaceBuilder.c
         Source/Interface/InterfaceBuilder/InterfaceBuilder.h
         Source/Interface/MenuManager/menuManager.c
-        Source/Interface/MenuManager/menuManager.h)
+        Source/Interface/MenuManager/menuManager.h
+        Source/Entities/Client/client.c
+        Source/Entities/Client/client.h
+        Source/Entities/Request/request.c
+        Source/Entities/Request/request.h
+        Source/Constants/constants.h
+        Source/Entities/RequestList/requestList.c
+        Source/Entities/RequestList/requestList.h
+        Source/Utilities/util.c
+        Source/Utilities/util.h)
 
 
 # Maxti PROGRAMMA DI TEST PER xxxxxxxx
@@ -53,4 +64,6 @@ add_executable(TestMaxti
         Source/Entities/Request/request.h
         Source/Constants/constants.h
         Source/Entities/RequestList/requestList.c
-        Source/Entities/RequestList/requestList.h)
+        Source/Entities/RequestList/requestList.h
+        Source/Utilities/util.c
+        Source/Utilities/util.h)

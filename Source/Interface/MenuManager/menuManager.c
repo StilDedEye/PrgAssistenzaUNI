@@ -4,6 +4,17 @@
 
 #include "menuManager.h"
 
+#include <stdlib.h>
+
+void init_menu()
+{
+    initialize_terminal();
+    cleanup_terminal();
+    print_logo();
+    print_credits();
+
+    // Carica da file?
+}
 
 // void mostra_menu_principale(void) {
 //     int scelta;
