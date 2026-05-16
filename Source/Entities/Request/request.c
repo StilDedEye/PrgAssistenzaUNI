@@ -133,7 +133,7 @@ const char* get_request_description(const Request *request)
 double get_request_estimated_cost(const Request *request)
 {
     if (request == NULL)
-        return 0.0;
+        return GET_ERROR_VALUE;
 
     return request->estimatedCost;
 }
@@ -141,14 +141,14 @@ double get_request_estimated_cost(const Request *request)
 double get_request_final_cost(const Request *request)
 {
     if (request == NULL)
-        return 0.0;
+        return GET_ERROR_VALUE;
 
     return request->finalCost;
 }
 
 struct tm get_request_creation_date(const Request *request)
 {
-    struct tm empty = {0};
+    const struct tm empty = {0};
 
     if (request == NULL)
         return empty;

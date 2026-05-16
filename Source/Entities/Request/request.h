@@ -5,6 +5,8 @@
 #ifndef PRGASSISTENZAUNI_REQUEST_H
 #define PRGASSISTENZAUNI_REQUEST_H
 
+#define GET_ERROR_VALUE -2
+
 #include "../Client/client.h"
 #include "../../Constants/constants.h"
 #include <time.h>
