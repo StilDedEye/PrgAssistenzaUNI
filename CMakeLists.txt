@@ -58,6 +58,11 @@ add_executable(TestMaxti
         _Testing/maxti/maxtiTest.c
         ExternalLibraries/fort/fort.c
         ExternalLibraries/fort/fort.h
+        Source/Interface/InterfaceConstants.h
+        Source/Interface/InterfaceBuilder/InterfaceBuilder.c
+        Source/Interface/InterfaceBuilder/InterfaceBuilder.h
+        Source/Interface/MenuManager/menuManager.c
+        Source/Interface/MenuManager/menuManager.h
         Source/Entities/Client/client.c
         Source/Entities/Client/client.h
         Source/Entities/Request/request.c

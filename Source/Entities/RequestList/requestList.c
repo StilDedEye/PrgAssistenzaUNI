@@ -10,7 +10,7 @@
 #include <string.h>
 
 
-void request_list_init(RequestList* requestList)
+void init_request_list(RequestList* requestList)
 {
     requestList->count = 0;
     requestList->capacity = 0;

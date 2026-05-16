@@ -25,7 +25,7 @@ typedef struct requestList {
  * @brief Crea una nuova lista di richieste vuota
  * @param requestList Lista da inizializzare
  */
-void request_list_init(RequestList* requestList);
+void init_request_list(RequestList* requestList);
 
 /**
  * @brief Rilascia le risorse associate a una lista di richieste.
