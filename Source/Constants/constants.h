@@ -6,8 +6,8 @@
 #define PRGASSISTENZAUNI_CONSTANTS_H
 
 /**
- * @enum Device
- * @brief Tipi di dispositivi supportati per le richieste di assistenza.
+ *
+ * @brief Enum di tipi di dispositivi supportati per le richieste di assistenza.
  *
  */
 typedef enum {
@@ -24,8 +24,8 @@ static const char* deviceNames[] = {"Laptop", "Smartphone", "Tablet", "Desktop",
 
 
 /**
- * @enum Priority
- * @brief Tipi di priorità assegnabili alle richieste di assistenza.
+ *
+ * @brief Enum di tipi di priorità assegnabili alle richieste di assistenza.
  *
  */
 typedef enum {
@@ -40,8 +40,8 @@ static const char* priorityNames[] = {"Massima", "Alta", "Media", "Bassa", "Mini
 
 
 /**
- * @enum RequestStatus
- * @brief Stati di avanzamento associabili alle richieste di assistenza.
+ *
+ * @brief Enum di stati di avanzamento associabili alle richieste di assistenza.
  *
  */
 typedef enum {
