@@ -39,21 +39,9 @@ add_executable(TestSteeldead
         Source/Interface/MenuManager/menuManager.c
         Source/Interface/MenuManager/menuManager.h)
 
-# PER ZAC: crea nella cartella _Testing/maxti un file chiamato {nomeFileTuoZac}.c
-# SENZA COMMITTARLO E SENZA AGGIUNGERLO AL CMAKE
-# e scrivici dentro i test che vuoi fare,
-# poi aggiungi qui sotto questa riga cambiando {nomeFileTuoZac} con il nome del file che hai creato
-
-# Poi crea nella cartella _Testing/steeldead un file chiamato stildedTest.c
-# SENZA COMMITTARLO E SENZA AGGIUNGERLO AL CMAKE e basta, dovrebbe andare.
-
-# Poi cancella questi commenti
-
-# Ogni volta che ti serve una classe da mettere in test la aggiungi come percorso relativo qua sotto,
-# tra le tonde
 
 # Maxti PROGRAMMA DI TEST PER xxxxxxxx
 add_executable(TestMaxti
-        _Testing/maxti/{nomeFileTuoZac}.c
+        _Testing/maxti/maxtiTest.c
         ExternalLibraries/fort/fort.c
         ExternalLibraries/fort/fort.h)
