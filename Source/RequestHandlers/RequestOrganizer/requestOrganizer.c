@@ -11,7 +11,9 @@
 #include "../../Entities/Request/request.h"
 #include "../../Entities/RequestList/requestList.h"
 
-void merge(Request **arr, size_t left, size_t mid, size_t right, bool (*criteria)(Request*, Request*))
+void merge(Request **arr, size_t left, size_t mid, size_t right,
+    bool (*criteria)(Request*, Request*,
+    bool (int, int)), bool (*control)(int, int))
 {
     // Dimensione delle due metà da unire: [left..mid] e [mid+1..right]
     size_t l_size = mid - left + 1;
@@ -38,7 +40,7 @@ void merge(Request **arr, size_t left, size_t mid, size_t right, bool (*criteria
     size_t i = 0, j = 0, k = left;
     while (i < l_size && j < r_size)
     {
-        if (criteria(left_arr[i], right_arr[j]))
+        if (criteria(left_arr[i], right_arr[j], control))
         {
             arr[k++] = left_arr[i++];
         }
@@ -59,28 +61,48 @@ void merge(Request **arr, size_t left, size_t mid, size_t right, bool (*criteria
     free(right_arr);
 }
 
-void merge_sort(Request **arr, size_t left, size_t right, bool (*criteria)(Request*, Request*))
+void merge_sort(Request **arr, size_t left, size_t right,
+    bool (*criteria)(Request*, Request*, bool (int, int)),
+    bool (*control)(int, int))
 {
     if (left < right)
     {
         // Divide ricorsivamente il segmento a metà finché non resta un solo elemento
         size_t mid = left + (right - left) / 2;
 
-        merge_sort(arr, left, mid, criteria);
-        merge_sort(arr, mid + 1, right, criteria);
+        merge_sort(arr, left, mid, criteria, control);
+        merge_sort(arr, mid + 1, right, criteria, control);
         // Ricompone le due metà già ordinate
-        merge(arr, left, mid, right, criteria);
+        merge(arr, left, mid, right, criteria, control);
     }
 }
 
-void request_list_sort(RequestList *requestList, bool (*criteria)(Request*, Request*))
+void request_list_sort(RequestList *requestList,
+    bool (*criteria)(Request*, Request*, bool (int, int)),
+    bool (*control)(int, int))
 {
     // Non c'è nulla da ordinare se la lista è nulla, vuota o composta da un solo elemento
     if (requestList == NULL || requestList->requests == NULL || requestList->count < 2)
         return;
 
     // Avvia il merge sort sull'intero array di richieste
-    merge_sort(requestList->requests, 0, requestList->count - 1, criteria);
+    merge_sort(requestList->requests, 0, requestList->count - 1, criteria, control);
+}
+
+/*
+ * ------------------------
+ * Criteri di Controllo
+ * ------------------------
+ */
+
+bool sort_crescent(int value1, int value2)
+{
+    return value1 < value2;
+}
+
+bool sort_descent(int value1, int value2)
+{
+    return value1 > value2;
 }
 
 
@@ -90,7 +112,7 @@ void request_list_sort(RequestList *requestList, bool (*criteria)(Request*, Requ
  * ------------------------
  */
 
-bool sort_by_client_name(Request *req1, Request *req2)
+bool sort_by_client_name(Request *req1, Request *req2, bool (*control)(int, int))
 {
     if (req1 == NULL || req2 == NULL)
         return false;
@@ -101,7 +123,8 @@ bool sort_by_client_name(Request *req1, Request *req2)
     if (req1_client_name == NULL || req2_client_name == NULL)
         return false;
 
-    if (strcmp(req1_client_name, req2_client_name) <= 0)
+    // strcmp ritorna int <= se la prima stringa viene prima della seconda
+    if (control(strcmp(req1_client_name, req2_client_name), 0))
     {
         // req1 viene prima di req2
         return true;
