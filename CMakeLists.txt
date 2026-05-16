@@ -44,4 +44,8 @@ add_executable(TestSteeldead
 add_executable(TestMaxti
         _Testing/maxti/maxtiTest.c
         ExternalLibraries/fort/fort.c
-        ExternalLibraries/fort/fort.h)
+        ExternalLibraries/fort/fort.h
+        Source/Entities/Client/client.c
+        Source/Entities/Client/client.h
+        Source/Entities/Request/request.c
+        Source/Entities/Request/request.h)

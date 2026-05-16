@@ -21,7 +21,7 @@ void cleanup_terminal()
     printf(_ANSI_DELETE_REMAINING);
 }
 
-void build_table_of_requests(bool cleanupTerminal)
+void build_requests_table(bool cleanupTerminal)
 {
     //TODO Rimpiazza questo vettore con quello nell'header della struct
     const char *vettore[] = {"TEMP1", "TEMP2", "TEMP3", "awd"};

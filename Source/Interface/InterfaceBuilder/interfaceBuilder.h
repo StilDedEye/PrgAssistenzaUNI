@@ -38,7 +38,7 @@
      * Se il parametro cleanupTerminal è true, pulisce il terminale prima
      * @param cleanupTerminal
      */
-    void build_table_of_requests(bool cleanupTerminal);
+    void build_requests_table(bool cleanupTerminal);
 
     /**
      * @brief Costruisce e visualizza la tabella dei clienti.
@@ -46,7 +46,7 @@
      * Se il parametro cleanupTerminal è true, pulisce il terminale prima
      * @param cleanupTerminal
      */
-    void build_table_of_clients(bool cleanupTerminal);
+    void build_clients_table(bool cleanupTerminal);
 
 
 #endif
