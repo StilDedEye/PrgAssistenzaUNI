@@ -21,10 +21,10 @@ void cleanup_terminal()
     printf(_ANSI_DELETE_REMAINING);
 }
 
-void build_requests_table(bool cleanupTerminal)
+void build_requests_table(const char *vettore[], size_t n, bool cleanupTerminal)
 {
     //TODO Rimpiazza questo vettore con quello nell'header della struct
-    const char *vettore[] = {"TEMP1", "TEMP2", "TEMP3", "awd"};
+    size_t numColonne = 4;
 
     cleanupTerminal ? cleanup_terminal() : printf("\n");
 
@@ -34,22 +34,41 @@ void build_requests_table(bool cleanupTerminal)
     // Imposta lo stile dei bordi
     ft_set_border_style(table, FT_SOLID_ROUND_STYLE);
 
-    // Imposta proprietà celle in posizione [0][*]: il tipo di riga è un header
-    ft_set_cell_prop(table, 0, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
+    // Scrive titolo della tabella
+    ft_u8write_ln(table, "ELENCO RICHIESTE DI ASSISTENZA");
 
-    // Scrive i nomi delle colonne
-    ft_row_write_ln( table, sizeof(vettore) / sizeof(char*), vettore);
+    // Imposta proprietà celle in posizione [0][0]: imposta cell span
+    ft_set_cell_span(table, 0, 0, numColonne);
+    // Imposta proprietà celle in posizione [0][0]: imposta colore e allineamento
+    ft_set_cell_prop(table, 0, 0, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
+    ft_set_cell_prop(table, 0, 0, FT_CPROP_CONT_FG_COLOR, FT_COLOR_MAGENTA);
+
+
+    // Imposta proprietà celle in posizione [0][*]: il tipo di riga è un header
+    ft_set_cell_prop(table, 1, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
+
+    // Scrive i nomi delle colonne (header)
+    ft_row_write_ln( table, numColonne, vettore);
 
     // Scrive le righe della tabella
-    for (size_t i = 0; i < 3; i++)
+    if (n == 0)
     {
-        ft_u8write_ln(table, "1", "Server Web", "45 MB");
+        ft_u8write_ln(table, "Nessuna richiesta trovata");
+        // Imposta proprietà celle in posizione [1][0]: imposta cell span
+        ft_set_cell_span(table, 2, 0, numColonne);
+        // Imposta proprietà celle in posizione [1][0]: allinea al centro il contenuto
+        ft_set_cell_prop(table, 2, 0, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
+        ft_set_cell_prop(table, 2, 0, FT_CPROP_CONT_FG_COLOR, FT_COLOR_RED);
     }
-    // Imposta proprietà celle in posizione [*][*]: allinea al centro il contenuto
-    ft_set_cell_prop(table, FT_ANY_ROW, FT_ANY_ROW, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
-
-    // TODO Colora riga x
-    //ft_set_cell_prop(table, riga_selezionata, FT_ANY_COLUMN, FT_CPROP_CONT_FG_COLOR, FT_COLOR_GREEN);
+    else
+    {
+        for (size_t i = 0; i < 3; i++)
+        {
+            ft_u8write_ln(table, "1", "Server Web", "45 MB");
+        }
+        // Imposta proprietà celle in posizione [*][*]: allinea al centro il contenuto
+        ft_set_cell_prop(table, FT_ANY_ROW, FT_ANY_ROW, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
+    }
 
     // Stampa della tabella
     printf("%s\n", ft_to_string(table));
@@ -57,4 +76,58 @@ void build_requests_table(bool cleanupTerminal)
 
     // Dealloca la memoria usata dalla tabella
     ft_destroy_table(table);
+}
+
+
+
+
+void print_logo(void) {
+    // \033[1;33m ANSI per attivare il colore giallo/arancione
+    printf("\033[1;33m");
+
+    printf(".------------------------------------------------------------.\n");
+    printf("|   ██████╗ ██████╗ ██╗███╗   ███╗                           |\n");
+    printf("|   ██╔══██╗██╔══██╗██║████╗ ████║                           |\n");
+    printf("|   ██║  ██║██████╔╝██║██╔████╔██║                           |\n");
+    printf("|   ██║  ██║██╔══██╗██║██║╚██╔╝██║                           |\n");
+    printf("|   ██████╔╝██║  ██║██║██║ ╚═╝ ██║                           |\n");
+    printf("|   ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝     ╚═╝                           |\n");
+    printf("|                                                            |\n");
+    printf("|   ███████╗████████╗██╗   ██╗██████╗ ██╗ ██████╗ ███████╗   |\n");
+    printf("|   ██╔════╝╚══██╔══╝██║   ██║██╔══██╗██║██╔═══██╗██╔════╝   |\n");
+    printf("|   ███████╗   ██║   ██║   ██║██║  ██║██║██║   ██║███████╗   |\n");
+    printf("|   ╚════██║   ██║   ██║   ██║██║  ██║██║██║   ██║╚════██║   |\n");
+    printf("|   ███████║   ██║   ╚██████╔╝██████╔╝██║╚██████╔╝███████║   |\n");
+    printf("|   ╚══════╝   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝ ╚══════╝   |\n");
+    printf("'------------------------------------------------------------'\n");
+
+    printf("\033[0m"); // RESET del colore
+    printf("\n");
+}
+
+void print_credits(void) {
+    const char *YELLOW = "\033[1;33m";
+    const char *WHITE = "\033[1;37m";
+    const char *RESET = "\033[0m";
+
+    printf("%s.------------------------------------------------------------.%s\n", YELLOW, RESET);
+
+    // Riga: Made by
+    printf("%s| %s%-10s%s%-49s%s|%s\n",
+           YELLOW, YELLOW, "Made by:", WHITE, "Andrea Silvani, Alessandro Zaccagnino", YELLOW, RESET);
+
+    // Riga: Corso
+    printf("%s| %s%-10s%s%-49s%s|%s\n",
+           YELLOW, YELLOW, "Corso:", WHITE, "Laboratorio di Informatica", YELLOW, RESET);
+
+    // Riga: Anno
+    printf("%s| %s%-10s%s%-49s%s|%s\n",
+           YELLOW, YELLOW, "Anno:", WHITE, "2025/2026", YELLOW, RESET);
+
+    // Riga: System
+    printf("%s| %s%-10s%s%-49s%s|%s\n",
+           YELLOW, YELLOW, "System:", WHITE, "Gestione Richieste di Assistenza Tecnica - v1.0", YELLOW, RESET);
+
+    printf("%s'------------------------------------------------------------'%s\n", YELLOW, RESET);
+    printf("\n");
 }
