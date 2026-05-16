@@ -50,7 +50,9 @@ add_executable(TestSteeldead
         Source/Entities/RequestList/requestList.c
         Source/Entities/RequestList/requestList.h
         Source/Utilities/util.c
-        Source/Utilities/util.h)
+        Source/Utilities/util.h
+        Source/RequestHandlers/RequestOrganizer/requestOrganizer.h
+        Source/RequestHandlers/RequestOrganizer/requestOrganizer.c)
 
 
 # Maxti PROGRAMMA DI TEST PER xxxxxxxx
@@ -71,4 +73,6 @@ add_executable(TestMaxti
         Source/Entities/RequestList/requestList.c
         Source/Entities/RequestList/requestList.h
         Source/Utilities/util.c
-        Source/Utilities/util.h)
+        Source/Utilities/util.h
+        Source/RequestHandlers/RequestOrganizer/requestOrganizer.h
+        Source/RequestHandlers/RequestOrganizer/requestOrganizer.c)
