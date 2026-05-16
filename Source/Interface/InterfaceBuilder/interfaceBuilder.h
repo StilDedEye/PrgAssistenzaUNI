@@ -36,17 +36,31 @@
      * @brief Costruisce e visualizza la tabella delle richieste.
      * @details Utilizza la libreria fort per creare una tabella formattata con i dati delle richieste.
      * Se il parametro cleanupTerminal è true, pulisce il terminale prima
+     * // TODO completare params
+     * @param vettore
      * @param cleanupTerminal
      */
-    void build_requests_table(bool cleanupTerminal);
+    void build_requests_table(const char *vettore[], size_t n, bool cleanupTerminal);
 
     /**
      * @brief Costruisce e visualizza la tabella dei clienti.
      * @details Utilizza la libreria fort per creare una tabella formattata con i dati dei clienti.
      * Se il parametro cleanupTerminal è true, pulisce il terminale prima
+     * // TODO completare params
      * @param cleanupTerminal
      */
-    void build_clients_table(bool cleanupTerminal);
+    void build_clients_table(const char *vettore[], size_t n, bool cleanupTerminal);
+
+
+    /**
+     * @brief Stampa il logo del gruppo.
+     */
+    void print_logo(void);
+
+    /**
+    * @brief Stampa i crediti del progetto.
+    */
+    void print_credits(void);
 
 
 #endif
