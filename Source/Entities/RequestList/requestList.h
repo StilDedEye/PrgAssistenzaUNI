@@ -15,7 +15,11 @@
  *  - [int] count: numero di richieste attualmente presenti nella lista
  *  - [int] capacity: capacità massima dell'array di richieste
  */
-typedef struct requestList RequestList;
+typedef struct requestList {
+    Request **requests;
+    int count;
+    int capacity;
+}RequestList;
 
 /**
  * @brief Crea una nuova lista di richieste vuota

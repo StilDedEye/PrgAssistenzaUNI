@@ -9,11 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct requestList {
-    Request **requests;
-    int count;
-    int capacity;
-};
 
 void request_list_init(RequestList* requestList)
 {
