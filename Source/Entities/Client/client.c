@@ -12,6 +12,7 @@ struct client {
     char *name;
 };
 
+//Costruttore Cliente
 Client* create_client(const char *clientID, const char *name)
 {
     if (clientID == NULL || name == NULL)
@@ -47,6 +48,7 @@ Client* create_client(const char *clientID, const char *name)
     return client;
 }
 
+//Distruttore Cliente
 void destroy_client(Client *client)
 {
     if (client == NULL)
