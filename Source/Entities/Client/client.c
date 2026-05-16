@@ -84,6 +84,7 @@ const char *get_client_name(Client *client)
 * Setters
 * -------------------
 */
+
 void set_client_name(Client *client, const char *name)
 {
     if (client == NULL)

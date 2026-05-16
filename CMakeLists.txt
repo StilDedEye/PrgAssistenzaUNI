@@ -48,4 +48,5 @@ add_executable(TestMaxti
         Source/Entities/Client/client.c
         Source/Entities/Client/client.h
         Source/Entities/Request/request.c
-        Source/Entities/Request/request.h)
+        Source/Entities/Request/request.h
+        Source/Constants/constants.h)

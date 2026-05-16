@@ -37,7 +37,7 @@ typedef struct request Request;
  * @param creationDate Data di creazione della richiesta
  * @return
  */
-Request *create_request(const char *requestID, Client *client, Device device,
+Request* create_request(const char *requestID, Client *client, Device device,
                         Priority priority, const char *description, double estimatedCost,
                         double finalCost, struct tm creationDate);
 
@@ -70,21 +70,21 @@ Client *get_request_client(const Request *request);
 /**
  * @brief Restituisce il tipo di dispositivo della richiesta.
  * @param request Richiesta da cui ottenere il dispositivo
- * @return Dispositivo associato alla richiesta
+ * @return Dispositivo associato alla richiesta. 0 in caso di errore
  */
 Device get_request_device(const Request *request);
 
 /**
  * @brief Restituisce la priorità assegnata alla richiesta.
  * @param request Richiesta da cui ottenere la priorità
- * @return Priorità della richiesta
+ * @return Priorità della richiesta. 0 in caso di errore
  */
 Priority get_request_priority(const Request *request);
 
 /**
  * @brief Restituisce lo stato corrente della richiesta.
  * @param request Richiesta da cui ottenere lo stato
- * @return Stato della richiesta
+ * @return Stato della richiesta. 0 in caso di errore
  */
 RequestStatus get_request_status(const Request *request);
 
@@ -112,7 +112,7 @@ double get_request_final_cost(const Request *request);
 /**
  * @brief Restituisce la data di creazione della richiesta.
  * @param request Richiesta da cui ottenere la data di creazione
- * @return Data di creazione della richiesta
+ * @return Data di creazione della richiesta. Empty struct in caso di errore
  */
 struct tm get_request_creation_date(const Request *request);
 
