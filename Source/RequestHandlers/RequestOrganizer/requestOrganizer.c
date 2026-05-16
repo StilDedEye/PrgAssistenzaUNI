@@ -12,8 +12,7 @@
 #include "../../Entities/RequestList/requestList.h"
 
 void merge(Request **arr, size_t left, size_t mid, size_t right,
-    bool (*criteria)(Request*, Request*,
-    bool (int, int)), bool (*control)(int, int))
+    bool (*criteria)(Request*, Request*, int), int order)
 {
     // Dimensione delle due metà da unire: [left..mid] e [mid+1..right]
     size_t l_size = mid - left + 1;
@@ -40,7 +39,7 @@ void merge(Request **arr, size_t left, size_t mid, size_t right,
     size_t i = 0, j = 0, k = left;
     while (i < l_size && j < r_size)
     {
-        if (criteria(left_arr[i], right_arr[j], control))
+        if (criteria(left_arr[i], right_arr[j], order))
         {
             arr[k++] = left_arr[i++];
         }
@@ -62,49 +61,49 @@ void merge(Request **arr, size_t left, size_t mid, size_t right,
 }
 
 void merge_sort(Request **arr, size_t left, size_t right,
-    bool (*criteria)(Request*, Request*, bool (int, int)),
-    bool (*control)(int, int))
+    bool (*criteria)(Request*, Request*, int), int order)
 {
     if (left < right)
     {
         // Divide ricorsivamente il segmento a metà finché non resta un solo elemento
         size_t mid = left + (right - left) / 2;
 
-        merge_sort(arr, left, mid, criteria, control);
-        merge_sort(arr, mid + 1, right, criteria, control);
+        merge_sort(arr, left, mid, criteria, order);
+        merge_sort(arr, mid + 1, right, criteria, order);
         // Ricompone le due metà già ordinate
-        merge(arr, left, mid, right, criteria, control);
+        merge(arr, left, mid, right, criteria, order);
     }
 }
 
 void request_list_sort(RequestList *requestList,
-    bool (*criteria)(Request*, Request*, bool (int, int)),
-    bool (*control)(int, int))
+    bool (*criteria)(Request*, Request*, int), int order)
 {
     // Non c'è nulla da ordinare se la lista è nulla, vuota o composta da un solo elemento
     if (requestList == NULL || requestList->requests == NULL || requestList->count < 2)
         return;
 
     // Avvia il merge sort sull'intero array di richieste
-    merge_sort(requestList->requests, 0, requestList->count - 1, criteria, control);
+    merge_sort(requestList->requests, 0, requestList->count - 1, criteria, order);
 }
 
 /*
  * ------------------------
- * Criteri di Controllo
+ * Ordine di Ordinamento
  * ------------------------
  */
 
-bool sort_crescent(int value1, int value2)
+bool sorting_order_control(int result, int order)
 {
-    return value1 < value2;
+    if (order == CRESCENT_SORTING)
+    {
+        return result >= 0;
+    }
+    else if (order == DESCENT_SORTING)
+    {
+        return result <= 0;
+    }
+    return false;
 }
-
-bool sort_descent(int value1, int value2)
-{
-    return value1 > value2;
-}
-
 
 /*
  * ------------------------
@@ -112,7 +111,7 @@ bool sort_descent(int value1, int value2)
  * ------------------------
  */
 
-bool sort_by_client_name(Request *req1, Request *req2, bool (*control)(int, int))
+bool sort_by_client_name(Request *req1, Request *req2, int order)
 {
     if (req1 == NULL || req2 == NULL)
         return false;
@@ -124,13 +123,34 @@ bool sort_by_client_name(Request *req1, Request *req2, bool (*control)(int, int)
         return false;
 
     // strcmp ritorna int <= se la prima stringa viene prima della seconda
-    if (control(strcmp(req1_client_name, req2_client_name), 0))
+    if ((strcmp(req1_client_name, req2_client_name) <= 0))
     {
         // req1 viene prima di req2
-        return true;
+        return sorting_order_control(1, order);
     } else
     {
         // req2 viene prima di req1
+        return sorting_order_control(-1, order);
+    }
+}
+
+bool sort_by_estimated_cost(Request *req1, Request *req2, int order)
+{
+    if (req1 == NULL || req2 == NULL)
+        return false;
+
+    const double req1_estimated_cost = get_request_estimated_cost(req1);
+    const double req2_estimated_cost = get_request_estimated_cost(req2);
+
+    if (req1_estimated_cost < req2_estimated_cost)
+    {
+        return sorting_order_control(1, order);
+    } else if (req1_estimated_cost > req2_estimated_cost)
+    {
+        return sorting_order_control(-1, order);
+    } else
+    {
         return false;
     }
+
 }

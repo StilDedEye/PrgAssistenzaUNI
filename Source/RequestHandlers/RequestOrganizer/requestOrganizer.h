@@ -5,6 +5,20 @@
 #ifndef PRGASSISTENZAUNI_REQUESTORGANIZER_H
 #define PRGASSISTENZAUNI_REQUESTORGANIZER_H
 
+/**
+ * @brief Costante che identifica l'ordinamento crescente.
+ * @details Può essere utilizzata come valore di controllo per indicare che un criterio
+ *          di confronto deve seguire un ordine crescente.
+ */
+#define CRESCENT_SORTING 1
+
+/**
+ * @brief Costante che identifica l'ordinamento decrescente.
+ * @details Può essere utilizzata come valore di controllo per indicare che un criterio
+ *          di confronto deve seguire un ordine decrescente.
+ */
+#define DESCENT_SORTING (-1)
+
 #include "../../Entities/Request/request.h"
 #include "../../Entities/Client/client.h"
 #include "../../Entities/RequestList/requestList.h"
@@ -17,13 +31,12 @@
  * @param mid Indice finale della prima metà / punto di separazione.
  * @param right Indice finale della seconda metà.
  * @param criteria Puntatore a funzione che definisce il criterio di confronto tra due richieste.
- * @param control Puntatore a funzione che definisce l'ordine (crescente o decrescente) per valori interi.
- * @details La funzione unisce due sottoarray già ordinati mantenendo l'ordine definito dai
- *          criteri di confronto e controllo forniti.
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
+ * @details La funzione unisce due sottoarray già ordinati mantenendo l'ordine definito dal
+ *          criterio di confronto e dalla direzione di ordinamento forniti.
  */
 void merge(Request **arr, size_t left, size_t mid, size_t right,
-           bool (*criteria)(Request*, Request*, bool (*)(int, int)),
-           bool (*control)(int, int));
+           bool (*criteria)(Request*, Request*, int), int order);
 
 /**
  * @brief Ordina ricorsivamente un array di richieste usando merge sort.
@@ -31,54 +44,41 @@ void merge(Request **arr, size_t left, size_t mid, size_t right,
  * @param left Indice iniziale del sottoarray da ordinare.
  * @param right Indice finale del sottoarray da ordinare.
  * @param criteria Puntatore a funzione che definisce il criterio di confronto tra due richieste.
- * @param control Puntatore a funzione che definisce l'ordine (crescente o decrescente) per valori interi.
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
  * @details Divide ricorsivamente l'array in sottoarray più piccoli, li ordina separatamente e
  *          poi li unisce tramite la funzione merge, utilizzando i criteri forniti.
  */
 void merge_sort(Request **arr, size_t left, size_t right,
-                bool (*criteria)(Request*, Request*, bool (*)(int, int)),
-                bool (*control)(int, int));
+                bool (*criteria)(Request*, Request*, int), int order);
 
 /**
  * @brief Ordina la lista di richieste contenuta in una RequestList.
  * @param requestList Puntatore alla lista di richieste da ordinare.
  * @param criteria Puntatore a funzione che definisce il criterio di confronto tra due richieste.
- * @param control Puntatore a funzione che definisce l'ordine (crescente o decrescente) per valori interi.
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
  * @details Applica l'algoritmo di merge sort sull'array interno della lista, se presente e
  *          se contiene più di un elemento, utilizzando i criteri di ordinamento specificati.
  */
 void request_list_sort(RequestList *requestList,
-                       bool (*criteria)(Request*, Request*, bool (*)(int, int)),
-                       bool (*control)(int, int));
+                       bool (*criteria)(Request*, Request*, int), int order);
 
 /*
  * ------------------------
- * Criteri di Controllo
+ * Ordine di Ordinamento
  * ------------------------
  */
 
 /**
- * @brief Comparatore per ordinamento crescente di valori interi.
- * @param value1 Primo valore da confrontare.
- * @param value2 Secondo valore da confrontare.
- * @return true se value1 è minore o uguale a value2 (ordine crescente),
+ * @brief Valuta se un risultato di confronto soddisfa l'ordine richiesto.
+ * @param result Risultato del confronto tra due valori.
+ * @param order Direzione di ordinamento desiderata: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
+ * @return true se il risultato del confronto è compatibile con l'ordine richiesto,
  *         false altrimenti.
- * @details Questa funzione è un criterio di controllo utilizzato per determinare
- *          l'ordine crescente durante l'ordinamento di valori numerici interi.
+ * @details Questa funzione interpreta il risultato di un confronto
+ *          alla luce della direzione di ordinamento specificata, restituendo true se il risultato indica che il primo elemento dovrebbe precedere il secondo
+ *          in base all'ordine richiesto.
  */
-bool sort_crescent(int value1, int value2);
-
-/**
- * @brief Comparatore per ordinamento decrescente di valori interi.
- * @param value1 Primo valore da confrontare.
- * @param value2 Secondo valore da confrontare.
- * @return true se value1 è maggiore o uguale a value2 (ordine decrescente),
- *         false altrimenti.
- * @details Questa funzione è un criterio di controllo utilizzato per determinare
- *          l'ordine decrescente durante l'ordinamento di valori numerici interi.
- */
-bool sort_descent(int value1, int value2);
-
+bool sorting_order_control(int result, int order);
 
 /*
  * ------------------------
@@ -90,13 +90,24 @@ bool sort_descent(int value1, int value2);
  * @brief Comparatore per ordinare le richieste per nome del cliente in ordine alfabetico.
  * @param req1 Prima richiesta da confrontare.
  * @param req2 Seconda richiesta da confrontare.
- * @param control Puntatore a funzione che definisce l'ordine (crescente o decrescente) per valori interi.
- * @return true se il nome del cliente in req1 deve precedere quello in req2 secondo il criterio definito,
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
+ * @return true se il nome del cliente in `req1` deve precedere quello in `req2` secondo il criterio definito,
  *         false altrimenti.
- * @details Questa funzione è un criterio di ordinamento che confronta i nomi dei clienti
- *          associati alle due richieste in modo lessicografico, applicando la direzione
- *          (crescente o decrescente) specificata dalla funzione control.
+ * @details Questa funzione confronta i nomi dei clienti associati alle due richieste in modo lessicografico,
+ *          applicando la direzione di ordinamento specificata.
  */
-bool sort_by_client_name(Request *req1, Request *req2, bool (*control)(int, int));
+bool sort_by_client_name(Request *req1, Request *req2, int order);
+
+/**
+ * @brief Comparatore per ordinare le richieste per costo stimato.
+ * @param req1 Prima richiesta da confrontare.
+ * @param req2 Seconda richiesta da confrontare.
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
+ * @return true se il costo stimato di `req1` deve precedere quello di `req2` secondo il criterio definito,
+ *         false altrimenti.
+ * @details Questa funzione confronta i costi stimati delle due richieste in modo numerico,
+ *          applicando la direzione di ordinamento specificata.
+ */
+bool sort_by_estimated_cost(Request *req1, Request *req2, int order);
 
 #endif //PRGASSISTENZAUNI_REQUESTORGANIZER_H
