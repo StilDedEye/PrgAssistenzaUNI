@@ -8,8 +8,8 @@
 /**
  * @brief Struttura dati che rappresenta un cliente
  * @details La struttura contiene:
- *  - clientID: identificativo univoco del cliente, del tipo "CL-XXX" dove XXX è un numero progressivo
- *  - name: nome del cliente
+ *  - [string] clientID: identificativo univoco del cliente, del tipo "CL-XXX" dove XXX è un numero progressivo
+ *  - [string] name: nome del cliente
  */
 typedef struct client Client;
 static const char* clientFieldNames[] = {"ID Cliente", "Nome Cliente"};
