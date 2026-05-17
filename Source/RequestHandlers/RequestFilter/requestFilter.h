@@ -20,7 +20,7 @@
  * @details Le funzioni che seguono questa firma devono trattare il parametro filterValue in modo
  *          coerente con il criterio (ad esempio, un int per priority, una string per client name, ecc.).
  */
-typedef bool (*filterCriteria)(Request* request, void* filterValue);
+typedef bool (*filterCriteria)(Request *request, void *filterValue);
 
 /**
  * @brief Filtra una RequestList secondo un criterio fornito.
@@ -32,7 +32,15 @@ typedef bool (*filterCriteria)(Request* request, void* filterValue);
  * @details Il chiamante è responsabile di liberare la RequestList restituita. Se requestList è NULL
  *          o criteria è NULL la funzione dovrebbe restituire NULL.
  */
-RequestList* filter_requests(RequestList* requestList, filterCriteria criteria, void* filterValue);
+RequestList *filter_requests(RequestList *requestList, filterCriteria criteria, void *filterValue);
+
+/*
+ * ------------------------
+ * Ricerca richiesta per ID
+ * ------------------------
+ */
+
+RequestList* search_by_request_id(RequestList* requestList, char* requestID);
 
 /*
  * ------------------------
@@ -47,7 +55,7 @@ RequestList* filter_requests(RequestList* requestList, filterCriteria criteria, 
  * @return true se lo stato della request corrisponde a * (RequestStatus*)filterValue, false altrimenti.
  * @details Se request è NULL o filterValue è NULL, la funzione dovrebbe restituire false.
  */
-bool filter_by_status(Request* request, void *filterValue);
+bool filter_by_status(Request *request, void *filterValue);
 
 /**
  * @brief Criterio: seleziona le richieste che hanno una specifica priorità.
@@ -56,7 +64,7 @@ bool filter_by_status(Request* request, void *filterValue);
  * @return true se la priorità della request corrisponde a * (Priority*)filterValue, false altrimenti.
  * @details Se request è NULL o filterValue è NULL, la funzione dovrebbe restituire false.
  */
-bool filter_by_priority(Request* request, void *filterValue);
+bool filter_by_priority(Request *request, void *filterValue);
 
 /**
  * @brief Criterio: seleziona le richieste il cui nome cliente corrisponde (parziale o esatto).
@@ -67,7 +75,7 @@ bool filter_by_priority(Request* request, void *filterValue);
  *          definito dall'implementazione. Se request è NULL, o il cliente è NULL, o filterValue è NULL,
  *          restituisce false.
  */
-bool filter_by_client_name(Request* request, void *filterValue);
+bool filter_by_client_name(Request *request, void *filterValue);
 
 /**
  * @brief Criterio: seleziona le richieste il cui clientID corrisponde al filtro.
@@ -76,16 +84,18 @@ bool filter_by_client_name(Request* request, void *filterValue);
  * @return true se l'ID cliente della request corrisponde esattamente al filtro, false altrimenti.
  * @details Se request è NULL, o il cliente è NULL, o filterValue è NULL, restituisce false.
  */
-bool filter_by_client_id(Request* request, void *filterValue);
+bool filter_by_client_id(Request *request, void *filterValue);
 
 /**
+ *
+ *
  * @brief Criterio di ricerca per identificativo della richiesta.
  * @param request Puntatore alla Request da controllare.
  * @param filterValue Puntatore a una stringa (const char*) contenente l'ID richiesta da cercare.
  * @return true se l'ID della request corrisponde (esatto o secondo la logica di ricerca) al filtro, false altrimenti.
- * @details Utilizzare questa funzione quando si vuole cercare una singola richiesta tramite ID.
- *          Se request è NULL o filterValue è NULL, restituisce false.
+ * @deprecated Questo criterio è più adatto per una ricerca binaria o lineare specifica, non per un filtro generico.
+ *             Considerare l'uso di search_by_request_id() per questo scopo.
  */
-bool search_by_request_id(Request* request, void *filterValue);
+bool filter_by_request_id(Request *request, void *filterValue);
 
 #endif //PRGASSISTENZAUNI_REQUESTFILTER_H

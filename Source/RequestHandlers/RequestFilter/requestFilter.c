@@ -36,6 +36,50 @@ RequestList* filter_requests(RequestList* requestList, filterCriteria criteria, 
 
 /*
  * ------------------------
+ * Ricerca richiesta per ID
+ * ------------------------
+ */
+
+RequestList* search_by_request_id(RequestList* requestList, char* requestID)
+{
+    if (requestList == NULL || requestID == NULL)
+        return NULL;
+
+    RequestList* filteredList = malloc(sizeof(RequestList));
+    if (filteredList == NULL)
+        return NULL;
+
+    init_request_list(filteredList);
+
+    int left = 0;
+    int right = requestList->count - 1;
+
+    while (left <= right)
+    {
+        int middle = left + (right - left) / 2;
+        Request* currentRequest = requestList->requests[middle];
+
+        if (currentRequest == NULL || get_request_id(currentRequest) == NULL)
+        {
+            return NULL;
+        }
+
+        int comparison = strcmp(get_request_id(currentRequest), requestID);
+
+        if (comparison == 0)
+            add_request(filteredList, currentRequest);
+
+        if (comparison < 0)
+            left = middle + 1;
+        else
+            right = middle - 1;
+    }
+
+    return filteredList;
+}
+
+/*
+ * ------------------------
  * Criteri di Filtraggio
  * ------------------------
  */
@@ -84,7 +128,7 @@ bool filter_by_client_id(Request* request, void *filterValue)
     return strcmp(get_client_id(client), filterValue) == 0;
 }
 
-bool search_by_request_id(Request* request, void *filterValue)
+bool filter_by_request_id(Request* request, void *filterValue)
 {
     if (request == NULL || filterValue == NULL)
         return false;
