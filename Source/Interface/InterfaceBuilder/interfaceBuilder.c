@@ -8,25 +8,25 @@
  *  Controlla la presenza della macro _WIN32 definita dal compiler se se il sistema è windows
  *  ed in caso imposta la codifica utf-8
 */
-void initialize_terminal()
+void ui_initialize_terminal()
 {
     #ifdef _WIN32
         SetConsoleOutputCP(CP_UTF8);
     #endif
 }
 
-void cleanup_terminal()
+void ui_clear_terminal()
 {
     printf(_ANSI_RESET_CURSOR);
     printf(_ANSI_DELETE_REMAINING);
 }
 
-void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
+void ui_print_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
 {
     // Calcola numero header della tabella
     size_t cols_number = sizeof(requestFieldNames) / sizeof(char*);
 
-    cleanupTerminal ? cleanup_terminal() : printf("\n");
+    cleanupTerminal ? ui_clear_terminal() : printf("\n");
 
     // Alloca mem dinamica per la struttura della tabella, ritornando un puntatore
     ft_table_t *table = ft_create_table();
@@ -85,12 +85,12 @@ void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
                 requestStatusNames[get_request_status(arr[i])],
                 get_request_description(arr[i]),
                 hasEstimatedCost ?
-                    parseDoubleFloatToString(bufferEstimatedCost, get_request_estimated_cost(arr[i]))
+                    util_parse_double_to_string(bufferEstimatedCost, get_request_estimated_cost(arr[i]))
                     : "N/A",
                 hasFinalCost ?
-                    parseDoubleFloatToString(bufferFinalCost, get_request_final_cost(arr[i]))
+                    util_parse_double_to_string(bufferFinalCost, get_request_final_cost(arr[i]))
                     : "N/A",
-                parseDateToString(bufferDate, get_request_creation_date(arr[i]))
+                util_parse_date_to_string(bufferDate, get_request_creation_date(arr[i]))
                 );
         }
         // Imposta proprietà celle in posizione [*][*]: allinea al centro il contenuto
@@ -105,10 +105,89 @@ void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
     ft_destroy_table(table);
 }
 
+void ui_print_header(const char* title)
+{
+    // Lunghezza costante del menu
+    const int TOTAL_WIDTH = 68;
+    int title_len = (int)strlen(title);
+
+    // Spazio interno disponibile per il testo, considerando un padding destro e sinistro di 2 caratteri ciascuno
+    int inner_width = TOTAL_WIDTH - 4;
+
+    // Attiva colore primario
+    printf(ANSI_COLOR_PRIMARY);
+
+    // Stampa il bordo superiore, del tipo "╔═════════╗"
+    printf("╔");
+    for (int i = 0; i < TOTAL_WIDTH - 2; i++) {
+        printf("═");
+    }
+    printf("╗\n");
+
+    // Stampa l'header, centrato, del tipo "║   TITOLO   ║"
+    printf("║ ");
+    if (title_len <= inner_width) {
+        // Calcola quanto padding interno serve a destra e a sinistra
+        int space_left = (inner_width - title_len) / 2;
+        int space_right = inner_width - title_len - space_left;
+
+        // Aggiunge padding a sinistra
+        for (int i = 0; i < space_left; i++) {
+            printf(" ");
+        }
+
+        // Aggiunge il titolo
+        printf("%s", title);
+
+        // Aggiunge padding a sinistra
+        for (int i = 0; i < space_right; i++) {
+            printf(" ");
+        }
+    } else {
+        /*
+         * Se viene passato un titolo più lungo di TOTAL_WIDTH, viene tagliato
+         * per non compromettere il terminale
+         */
+        printf("%.*s...", inner_width - 3, title);
+    }
+    printf(" ║\n");
+
+    // Stampa il bordo inferiore, del tipo "╚═════════╝"
+    printf("╚");
+    for (int i = 0; i < TOTAL_WIDTH - 2; i++) {
+        printf("═");
+    }
+    printf("╝\n");
+
+    // Resetta il colore per i testi successivi
+    printf(ANSI_COLOR_RESET "\n");
+}
+
+void ui_print_section_title(const char* section_name) {
+    printf(ANSI_COLOR_SECONDARY "--- %s ---\n" ANSI_COLOR_RESET "\n", section_name);
+}
+
+void ui_print_success(const char* message) {
+    printf("\n" ANSI_COLOR_SUCCESS "[✓] %s" ANSI_COLOR_RESET "\n", message);
+}
+
+void ui_print_error(const char* message) {
+    printf("\n" ANSI_COLOR_ERROR "[ERRORE] %s" ANSI_COLOR_RESET "\n", message);
+}
+
+void ui_print_warning(const char* message) {
+    printf("\n" ANSI_COLOR_PRIMARY "[ATTENZIONE] %s" ANSI_COLOR_RESET "\n", message);
+}
+
+void ui_wait_for_keypress(void) {
+    printf("\n" ANSI_COLOR_TERTIARY "Press ENTER to continue..." ANSI_COLOR_RESET);
+    getchar();
+}
 
 
 
-void print_logo(void) {
+
+void ui_print_logo(void) {
     // \033[1;33m ANSI per attivare il colore giallo/arancione
     printf("\033[1;33m");
 
@@ -132,7 +211,7 @@ void print_logo(void) {
     printf("\n");
 }
 
-void print_credits(void) {
+void ui_print_credits(void) {
     const char *YELLOW = "\033[1;33m";
     const char *WHITE = "\033[1;37m";
     const char *RESET = "\033[0m";

@@ -48,5 +48,30 @@
       */
      #define _ANSI_CLEAR_SCREEN "\033[2J"
 
+    /**
+      * @brief Nasconde il cursore del terminale tramite sequenza di escape ANSI.
+      * @code
+      * printf("%s", _ANSI_HIDE_CURSOR);
+      * @endcode
+      */
+     #define _ANSI_HIDE_CURSOR "\x1b[?25l"
+
+    /**
+      * @brief Mostra il cursore del terminale tramite sequenza di escape ANSI.
+      * @code
+      * printf("%s", _ANSI_HIDE_CURSOR);
+      * @endcode
+      */
+     #define _ANSI_SHOW_CURSOR "\x1b[?25h"
+
+    // Codici Colore ANSI
+    #define ANSI_COLOR_RESET   "\x1b[0m"
+    #define ANSI_COLOR_PRIMARY  "\x1b[1;33m" // Primario | Giallo
+    #define ANSI_COLOR_SECONDARY    "\x1b[1;36m" // Secondario | Ciano
+    #define ANSI_COLOR_SUCCESS   "\x1b[1;32m" // Successo | Verde
+    #define ANSI_COLOR_ERROR     "\x1b[1;31m" // Errore | Rosso
+    #define ANSI_COLOR_TERTIARY    "\x1b[90m"   // Neutro | Grigio
+    #define ANSI_BG_SELECTED "\x1b[30;43m"  // Per testo selezionato
+
 #endif
 

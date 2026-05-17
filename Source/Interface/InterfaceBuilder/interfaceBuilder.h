@@ -8,7 +8,7 @@
     #include <stdio.h>
     #include "../../../ExternalLibraries/fort/fort.h"
     #include "../interfaceConstants.h"
-    #include <stdbool.h>
+#include <stdbool.h>
 
     #ifdef _WIN32
         #include <windows.h> // Serve per configurare il terminale su Windows
@@ -26,14 +26,14 @@
      * @details Se il sistema operativo è Windows, viene impostato il terminale in Utf-8. Su altri sistemi operativi
      *          (Linux, macOS) questo viene fatto già di default.
      */
-    void initialize_terminal(void);
+    void ui_initialize_terminal(void);
 
     /**
      * @brief Pulisce il terminale.
      * @details Utilizza una combinazione di sequenze escape ANSI per cancellare tutto il testo presente nel terminale e
      *          riportare il cursore in alto a sinistra (0,0).
      */
-    void cleanup_terminal(void);
+    void ui_clear_terminal(void);
 
     /**
      * @brief Costruisce e visualizza la tabella delle richieste.
@@ -44,7 +44,7 @@
      * @param cleanupTerminal
      * @see Entities/Request/*
      */
-    void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal);
+    void ui_print_requests_table(const Request* arr[], size_t n, bool cleanupTerminal);
 
     /**
      * @brief Costruisce e visualizza la tabella dei clienti.
@@ -53,18 +53,54 @@
      * // TODO completare params
      * @param cleanupTerminal
      */
-    void build_clients_table(const char *vettore[], size_t n, bool cleanupTerminal);
+    void ui_print_clients_table(const char *arr[], size_t n, bool cleanupTerminal);
+
+
+    /**
+     * @brief Stampa un header formattato a schermo.
+     * @param title Titolo da stampare
+     */
+    void ui_print_header(const char* title);
+
+    /**
+     * @brief Stampa un titolo di sezione formattato a schermo.
+     * @param section_name Titolo da stampare
+     */
+    void ui_print_section_title(const char* section_name);
+
+    /**
+     * @brief Stampa un messaggio di successo formattato a schermo.
+     * @param message Messaggio da stampare
+     */
+    void ui_print_success(const char* message);
+
+    /**
+     * @brief Stampa un messaggio di errore formattato a schermo
+     * @param message Messaggio da stampare
+     */
+    void ui_print_error(const char* message);
+
+    /**
+     * @brief Stampa un messaggio di avviso formattato a schermo
+     * @param message Messaggio da stampare
+     */
+    void ui_print_warning(const char* message);
+
+    /**
+     * @brief Stampa un messaggio a schermo di attesa, bloccando la ui fino a quando non viene premuto un tasto qualsiasi.
+     */
+    void ui_wait_for_keypress(void);
 
 
     /**
      * @brief Stampa il logo del gruppo.
      */
-    void print_logo(void);
+    void ui_print_logo(void);
 
     /**
     * @brief Stampa i crediti del progetto.
     */
-    void print_credits(void);
+    void ui_print_credits(void);
 
 
 #endif

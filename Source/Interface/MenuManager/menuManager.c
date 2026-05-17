@@ -4,72 +4,37 @@
 
 #include "menuManager.h"
 
-void init_menu()
-{
-    initialize_terminal();
-    cleanup_terminal();
-    print_logo();
-    print_credits();
 
-    // Carica da file?
+static void menu_home(RequestList*);
+
+
+void init_menu(RequestList* requestList)
+{
+    ui_initialize_terminal();
+    ui_clear_terminal();
+    ui_print_logo();
+    ui_print_credits();
+    printf(_ANSI_HIDE_CURSOR); // Nasconde cursore del terminale
+
+    menu_home(requestList);
 }
 
-// void mostra_menu_principale(void) {
-//     int scelta;
-//     do {
-//
-//         stampa_grafica_menu_principale();
-//
-//
-//         scelta = prendi_input_intero(0, 4);
-//
-//
-//         switch (scelta) {
-//             case 1:
-//                 mostra_sottomenu_visualizza();
-//                 break;
-//             case 2:
-//                 mostra_sottomenu_gestione();
-//                 break;
-//             case 3:
-//                 mostra_sottomenu_filtri();
-//                 break;
-//             case 4:
-//                 mostra_sottomenu_report();
-//                 break;
-//             case 0:
-//                 salva_richieste_su_file("richieste.txt");
-//                 break;
-//         }
-//     } while (scelta != 0);
-// }
 
-// void mostra_sottomenu_visualizza(void) {
-//     char scelta;
-//     do {
-//         stampa_grafica_sottomenu_visualizza();
-//         scelta = prendi_input_carattere();
-//
-//         switch (scelta) {
-//             case '1':
-//
-//                 azione_mostra_elenco_completo();
-//                 break;
-//             case '2':
-//                 azione_cerca_tramite_codice();
-//                 break;
-//             case '3':
-//                 azione_ordina_costo_stimato();
-//                 break;
-//             case '4':
-//                 mostra_mini_prompt_ordinamento_personalizzato();
-//                 break;
-//             case 'B':
-//             case 'b':
-//
-//                 break;
-//             default:
-//                 printf("Opzione non valida!\n");
-//         }
-//     } while (scelta != 'B' && scelta != 'b');
-// }
+void menu_home(RequestList* requestList)
+{
+    int choice = 0;
+    bool running = true;
+
+    while (running)
+    {
+        ui_clear_terminal();
+        ui_print_header("MENU PRINCIPALE");
+        ui_print_section_title("MENU PRINCIPALE");
+        ui_wait_for_keypress();
+        int pressed_key = util_read_key();
+        switch (pressed_key)
+        {
+
+        }
+    }
+}
