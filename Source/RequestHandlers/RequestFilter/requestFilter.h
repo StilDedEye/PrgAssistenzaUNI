@@ -40,6 +40,18 @@ RequestList *filter_requests(RequestList *requestList, filterCriteria criteria, 
  * ------------------------
  */
 
+/**
+ * @brief Cerca una richiesta all'interno di una RequestList tramite il suo identificativo.
+ * @param requestList Lista di richieste in cui effettuare la ricerca.
+ * @param requestID Identificativo della richiesta da cercare.
+ * @return Nuova RequestList contenente la richiesta trovata, oppure NULL se non viene trovata
+ *         o in caso di errore.
+ * @details Questa funzione esegue una ricerca binaria per ID richiesta
+ *          all'interno di una lista di richieste. Il risultato può contenere un solo elemento
+ *          oppure essere vuoto, a seconda dell'implementazione. Il risultato è di tipo RequestList
+ *          per semplificare l'utilizzo delle tabelle. Ciò non impatta sulla memoria poiché RequestList
+ *          contiene un array di puntatori
+ */
 RequestList* search_by_request_id(RequestList* requestList, char* requestID);
 
 /*
@@ -87,8 +99,6 @@ bool filter_by_client_name(Request *request, void *filterValue);
 bool filter_by_client_id(Request *request, void *filterValue);
 
 /**
- *
- *
  * @brief Criterio di ricerca per identificativo della richiesta.
  * @param request Puntatore alla Request da controllare.
  * @param filterValue Puntatore a una stringa (const char*) contenente l'ID richiesta da cercare.
