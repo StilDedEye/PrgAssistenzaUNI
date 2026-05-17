@@ -122,14 +122,15 @@ bool sort_by_client_name(Request *req1, Request *req2, int order)
     if (req1_client_name == NULL || req2_client_name == NULL)
         return false;
 
+    //Mantiene la stabilità (se le due variabili sono uguali mantiene l'ordine originale)
+    if (req1_client_name == req2_client_name) return true;
+
     // strcmp ritorna int <= se la prima stringa viene prima della seconda
     if ((strcmp(req1_client_name, req2_client_name) <= 0))
     {
-        // req1 viene prima di req2
         return sorting_order_control(true, order);
     } else
     {
-        // req2 viene prima di req1
         return sorting_order_control(false, order);
     }
 }
@@ -142,7 +143,10 @@ bool sort_by_estimated_cost(Request *req1, Request *req2, int order)
     const double req1_estimated_cost = get_request_estimated_cost(req1);
     const double req2_estimated_cost = get_request_estimated_cost(req2);
 
-    if (req1_estimated_cost <= req2_estimated_cost)
+    //Mantiene la stabilità (se le due variabili sono uguali mantiene l'ordine originale)
+    if (req1_estimated_cost == req2_estimated_cost) return true;
+
+    if (req1_estimated_cost < req2_estimated_cost)
     {
         return sorting_order_control(true, order);
     } else
@@ -159,7 +163,10 @@ bool sort_by_priority(Request *req1, Request *req2, int order)
     const Priority req1_priority = get_request_priority(req1);
     const Priority req2_priority = get_request_priority(req2);
 
-    if (req1_priority <= req2_priority)
+    //Mantiene la stabilità (se le due variabili sono uguali mantiene l'ordine originale)
+    if (req1_priority == req2_priority) return true;
+
+    if (req1_priority > req2_priority)
     {
         return sorting_order_control(true, order);
     } else

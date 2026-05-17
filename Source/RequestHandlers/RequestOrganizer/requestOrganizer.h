@@ -121,4 +121,5 @@ bool sort_by_estimated_cost(Request *req1, Request *req2, int order);
  *          applicando la direzione di ordinamento specificata.
  */
 bool sort_by_priority(Request *req1, Request *req2, int order);
+
 #endif //PRGASSISTENZAUNI_REQUESTORGANIZER_H
