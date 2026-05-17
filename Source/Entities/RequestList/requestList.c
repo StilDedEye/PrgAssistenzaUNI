@@ -17,6 +17,19 @@ void init_request_list(RequestList* requestList)
     requestList->requests = NULL;
 }
 
+void destroy_request_list(RequestList* requestList)
+{
+    if (requestList->requests != NULL)
+    {
+        free(requestList->requests);
+    }
+
+    requestList->count = 0;
+    requestList->capacity = 0;
+    requestList->requests = NULL;
+}
+
+
 int add_request(RequestList* requestList, Request* request)
 {
     if (requestList == NULL || request == NULL)

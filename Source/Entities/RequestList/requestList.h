@@ -31,7 +31,7 @@ void init_request_list(RequestList* requestList);
  * @brief Rilascia le risorse associate a una lista di richieste.
  * @param requestList Puntatore alla lista da distruggere.
  */
-void request_list_destroy(RequestList* requestList);
+void destroy_request_list(RequestList* requestList);
 
 /**
  * @brief Aggiunge una nuova richiesta alla lista.
