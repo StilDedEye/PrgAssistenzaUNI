@@ -9,7 +9,7 @@ int main(void)
     // TODO Lettura da file
     RequestList requestList = data();
 
-    init_menu(&requestList);
+    init_root_menu(&requestList);
 
 }
 
@@ -33,7 +33,7 @@ RequestList data()
 
     Request *testRequests[] = {
         create_request("RQ-1", testClients[0], SMARTPHONE, HIGH, "Display cracked", VAL_UNDEFINED, VAL_UNDEFINED, testDate),
-        create_request("RQ-2", testClients[1], LAPTOP, MEDIUM, "Battery drains quickly", 18544.24, 85.4, testDate),
+        create_request("RQ-2", testClients[1], LAPTOP, MEDIUM, "Battery drains and wifi doesn't work", 18544.24, 85.4, testDate),
         create_request("RQ-3", testClients[2], TABLET, LOW, "Slow performance", 50.0, -1.0, testDate),
         create_request("RQ-4", testClients[3], PRINTER, HIGH, "Won't boot", 150.0, VAL_UNDEFINED, testDate),
         NULL

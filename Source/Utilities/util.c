@@ -48,14 +48,18 @@ int util_read_key(void)
 #ifdef WIN32
     int ch = _getch(); // Restituisce lo Scancode del tasto premuto
 
-    /* I caratteri speciali, come le frecce, inviano due codici: il primo è 0 o 224,
-     * seguito da un secondo codice che identifica il tasto specifico */
+    /* I caratteri speciali (frecce) inviano due codici: il primo è 0 o 224,
+     * seguito dal secondo codice che identifica il tasto specifico */
     if (ch == 0 || ch == 224)
-        if (ch == 0 || ch == 224) {
-            ch = _getch();
-            if (ch == 72) return UTIL_KEY_UP;
-            if (ch == 80) return UTIL_KEY_DOWN;
-        }
+    {
+        ch = _getch(); // Legge il secondo codice specifico
+
+        if (ch == 72) return UTIL_KEY_UP;
+        if (ch == 80) return UTIL_KEY_DOWN;
+        if (ch == 75) return UTIL_KEY_LEFT;
+        if (ch == 77) return UTIL_KEY_RIGHT;
+    }
+
     if (ch == 13) return UTIL_KEY_ENTER; // Invio su Windows
     return UTIL_KEY_OTHER;
 #else

@@ -17,6 +17,9 @@
  * @{
  */
 
+/** @brief Usato nei casi in cui non si vuole specificare un tasto in particolare */
+#define UTIL_KEY_UNDEFINED 1000
+
 /** @brief Restituito quando viene premuto un tasto non rilevante per la navigazione dei menu. */
 #define UTIL_KEY_OTHER 1001
 
@@ -26,8 +29,14 @@
 /** @brief Codice univoco associato alla pressione della freccia GIÙ. */
 #define UTIL_KEY_DOWN  1003
 
+/** @brief Codice univoco associato alla pressione della freccia SINISTRA. */
+#define UTIL_KEY_LEFT  1004
+
+/** @brief Codice univoco associato alla pressione della freccia DESTRA. */
+#define UTIL_KEY_RIGHT  1005
+
 /** @brief Codice unificato per il tasto INVIO, indipendente dal sistema operativo in uso. */
-#define UTIL_KEY_ENTER 1004
+#define UTIL_KEY_ENTER 1006
 
 /** @} */
 
