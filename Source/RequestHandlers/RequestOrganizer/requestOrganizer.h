@@ -122,4 +122,41 @@ bool sort_by_estimated_cost(Request *req1, Request *req2, int order);
  */
 bool sort_by_priority(Request *req1, Request *req2, int order);
 
+/**
+ * @brief Comparatore per ordinare le richieste per data di creazione.
+ * @param req1 Prima richiesta da confrontare.
+ * @param req2 Seconda richiesta da confrontare.
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
+ * @return true se la data di creazione di `req1` deve precedere quella di `req2` secondo il criterio definito,
+ *         false altrimenti.
+ * @details Questa funzione confronta le date di creazione associate alle due richieste in modo cronologico,
+ *          applicando la direzione di ordinamento specificata.
+ */
+bool sort_by_creation_date(Request *req1, Request *req2, int order);
+
+/**
+ * @brief Comparatore per ordinare le richieste per tipo di dispositivo.
+ * @param req1 Prima richiesta da confrontare.
+ * @param req2 Seconda richiesta da confrontare.
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
+ * @return true se il dispositivo di `req1` deve precedere quello di `req2` secondo il criterio definito,
+ *         false altrimenti.
+ * @details Questa funzione confronta i tipi di dispositivo associati alle due richieste in modo numerico,
+ *          applicando la direzione di ordinamento specificata.
+ */
+bool sort_by_device(Request *req1, Request *req2, int order);
+
+/**
+ * @brief Comparatore per ordinare le richieste per stato di avanzamento.
+ * @param req1 Prima richiesta da confrontare.
+ * @param req2 Seconda richiesta da confrontare.
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
+ * @return true se lo stato di `req1` deve precedere quello di `req2` secondo il criterio definito,
+ *         false altrimenti.
+ * @details Questa funzione confronta gli stati di avanzamento associati alle due richieste in modo numerico,
+ *          applicando la direzione di ordinamento specificata.
+ */
+bool sort_by_status(Request *req1, Request *req2, int order);
+
+
 #endif //PRGASSISTENZAUNI_REQUESTORGANIZER_H

@@ -94,6 +94,7 @@ void request_list_sort(RequestList *requestList,
 
 bool sorting_order_control(bool result, int order)
 {
+
     if (order == CRESCENT_SORTING)
     {
         return result;
@@ -102,7 +103,9 @@ bool sorting_order_control(bool result, int order)
     {
         return !result;
     }
-    return false;
+
+    //Di default, se order è un valore non accettato, si ordina in modo crescente
+    return result;
 }
 
 /*
@@ -166,7 +169,72 @@ bool sort_by_priority(Request *req1, Request *req2, int order)
     //Mantiene la stabilità (se le due variabili sono uguali mantiene l'ordine originale)
     if (req1_priority == req2_priority) return true;
 
+    //In questo caso si usa > perchè in enum Priority sono in ordine inverso (Da Massima a Minima)
     if (req1_priority > req2_priority)
+    {
+        return sorting_order_control(true, order);
+    } else
+    {
+        return sorting_order_control(false, order);
+    }
+}
+
+bool sort_by_creation_date(Request *req1, Request *req2, int order)
+{
+    if (req1 == NULL || req2 == NULL)
+        return false;
+
+    struct tm req1_creation_date = get_request_creation_date(req1);
+    struct tm req2_creation_date = get_request_creation_date(req2);
+
+    //mktime trasforma la struct tm in un timestamp (secondi trascorsi dal 1 gennaio 1970) che può essere confrontato numericamente
+    time_t req1_timestamp = mktime(&req1_creation_date);
+    time_t req2_timestamp = mktime(&req2_creation_date);
+
+    //Mantiene la stabilità (se le due variabili sono uguali mantiene l'ordine originale)
+    if (req1_timestamp == req2_timestamp) return true;
+
+    if (req1_timestamp < req2_timestamp)
+    {
+        return sorting_order_control(true, order);
+    }else
+    {
+        return sorting_order_control(false, order);
+    }
+}
+
+bool sort_by_device(Request *req1, Request *req2, int order)
+{
+    if (req1 == NULL || req2 == NULL)
+        return false;
+
+    const Device req1_device = get_request_device(req1);
+    const Device req2_device = get_request_device(req2);
+
+    //Mantiene la stabilità (se le due variabili sono uguali mantiene l'ordine originale)
+    if (req1_device == req2_device) return true;
+
+    if (req1_device < req2_device)
+    {
+        return sorting_order_control(true, order);
+    } else
+    {
+        return sorting_order_control(false, order);
+    }
+}
+
+bool sort_by_status(Request *req1, Request *req2, int order)
+{
+    if (req1 == NULL || req2 == NULL)
+        return false;
+
+    const RequestStatus req1_status = get_request_status(req1);
+    const RequestStatus req2_status = get_request_status(req2);
+
+    //Mantiene la stabilità (se le due variabili sono uguali mantiene l'ordine originale)
+    if (req1_status == req2_status) return true;
+
+    if (req1_status < req2_status)
     {
         return sorting_order_control(true, order);
     } else
