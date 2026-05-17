@@ -4,8 +4,6 @@
 
 #include "menuManager.h"
 
-#include <stdlib.h>
-
 void init_menu()
 {
     initialize_terminal();

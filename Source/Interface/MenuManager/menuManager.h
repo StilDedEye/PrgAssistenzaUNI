@@ -4,7 +4,9 @@
 
 #ifndef PRGASSISTENZAUNI_MENUMANAGER_H
     #define PRGASSISTENZAUNI_MENUMANAGER_H
+
 #include "../InterfaceBuilder/interfaceBuilder.h"
+#include <stdlib.h>
 
 /**
  * //TODO completa commento
