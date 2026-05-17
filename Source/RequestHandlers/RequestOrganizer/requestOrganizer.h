@@ -110,4 +110,15 @@ bool sort_by_client_name(Request *req1, Request *req2, int order);
  */
 bool sort_by_estimated_cost(Request *req1, Request *req2, int order);
 
+/**
+ * @brief Comparatore per ordinare le richieste per livello di priorità.
+ * @param req1 Prima richiesta da confrontare.
+ * @param req2 Seconda richiesta da confrontare.
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
+ * @return true se la priorità di `req1` deve precedere quella di `req2` secondo il criterio definito,
+ *         false altrimenti.
+ * @details Questa funzione confronta i livelli di priorità associati alle due richieste in modo numerico,
+ *          applicando la direzione di ordinamento specificata.
+ */
+bool sort_by_priority(Request *req1, Request *req2, int order);
 #endif //PRGASSISTENZAUNI_REQUESTORGANIZER_H

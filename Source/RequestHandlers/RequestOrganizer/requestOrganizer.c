@@ -142,15 +142,28 @@ bool sort_by_estimated_cost(Request *req1, Request *req2, int order)
     const double req1_estimated_cost = get_request_estimated_cost(req1);
     const double req2_estimated_cost = get_request_estimated_cost(req2);
 
-    if (req1_estimated_cost < req2_estimated_cost)
+    if (req1_estimated_cost <= req2_estimated_cost)
     {
         return sorting_order_control(true, order);
-    } else if (req1_estimated_cost > req2_estimated_cost)
-    {
-        return sorting_order_control(false, order);
     } else
     {
-        return false;
+        return sorting_order_control(false, order);
     }
+}
 
+bool sort_by_priority(Request *req1, Request *req2, int order)
+{
+    if (req1 == NULL || req2 == NULL)
+        return false;
+
+    const Priority req1_priority = get_request_priority(req1);
+    const Priority req2_priority = get_request_priority(req2);
+
+    if (req1_priority <= req2_priority)
+    {
+        return sorting_order_control(true, order);
+    } else
+    {
+        return sorting_order_control(false, order);
+    }
 }
