@@ -48,5 +48,62 @@
       */
      #define _ANSI_CLEAR_SCREEN "\033[2J"
 
+    /**
+      * @brief Nasconde il cursore del terminale tramite sequenza di escape ANSI.
+      * @code
+      * printf("%s", _ANSI_HIDE_CURSOR);
+      * @endcode
+      */
+     #define _ANSI_HIDE_CURSOR "\x1b[?25l"
+
+    /**
+      * @brief Mostra il cursore del terminale tramite sequenza di escape ANSI.
+      * @code
+      * printf("%s", _ANSI_HIDE_CURSOR);
+      * @endcode
+      */
+    #define _ANSI_SHOW_CURSOR "\x1b[?25h"
+
+    /**
+     * @brief Attiva lo stile di testo corsivo (italic) tramite sequenza di escape ANSI.
+     * @code
+     * printf("%sTesto in corsivo %s", _ANSI_STYLE_ITALIC, _ANSI_COLOR_STYLE_RESET);
+     * @endcode
+     */
+    #define _ANSI_STYLE_ITALIC "\x1b[3m"
+
+    /**
+     * @brief Attiva lo stile di testo grassetto (bold) tramite sequenza di escape ANSI.
+     * @code
+     * printf("%sTesto in grassetto %s", _ANSI_STYLE_BOLD, _ANSI_COLOR_STYLE_RESET);
+     * @endcode
+     */
+    #define _ANSI_STYLE_BOLD "\x1b[1m"
+
+    /**
+     * @brief Attiva lo stile di testo sbiadito (faint) tramite sequenza di escape ANSI.
+     * @code
+     * printf("%sTesto sbiadito %s", _ANSI_STYLE_FAINT, _ANSI_COLOR_STYLE_RESET);
+     * @endcode
+     */
+    #define _ANSI_STYLE_FAINT "\x1b[2m"
+
+    /**
+         * @brief Attiva lo stile di testo sottolineato tramite sequenza di escape ANSI.
+         * @code
+         * printf("%sTesto sottolineato %s", _ANSI_STYLE_UNDERLINE, _ANSI_COLOR_STYLE_RESET);
+         * @endcode
+         */
+    #define _ANSI_STYLE_UNDERLINE "\x1b[4m"
+
+    // Codici Colore ANSI
+    #define _ANSI_COLOR_STYLE_RESET   "\x1b[0m"
+    #define _ANSI_COLOR_PRIMARY  "\x1b[1;33m" // Primario | Giallo
+    #define _ANSI_COLOR_SECONDARY    "\x1b[1;36m" // Secondario | Ciano
+    #define _ANSI_COLOR_SUCCESS   "\x1b[1;32m" // Successo | Verde
+    #define _ANSI_COLOR_ERROR     "\x1b[1;31m" // Errore | Rosso
+    #define _ANSI_COLOR_TERTIARY    "\x1b[90m"   // Neutro | Grigio
+    #define _ANSI_BG_SELECTED "\x1b[30;43m"  // Per testo selezionato
+
 #endif
 

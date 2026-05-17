@@ -20,7 +20,7 @@ add_executable(PrgAssistenzaUNI Source/main.c
         Source/RequestHandlers/RequestFilter/requestFilter.h
         Source/RequestHandlers/RequestStats/requestStats.c
         Source/RequestHandlers/RequestStats/requestStats.h
-        Source/Interface/InterfaceConstants.h
+        Source/Interface/interfaceConstants.h
         Source/RequestHandlers/RequestOrganizer/requestOrganizer.c
         Source/Interface/InterfaceBuilder/InterfaceBuilder.c
         Source/Interface/InterfaceBuilder/InterfaceBuilder.h
@@ -37,7 +37,7 @@ add_executable(TestSteeldead
         _Testing/steeldead/stildedTest.c
         ExternalLibraries/fort/fort.c
         ExternalLibraries/fort/fort.h
-        Source/Interface/InterfaceConstants.h
+        Source/Interface/interfaceConstants.h
         Source/Interface/InterfaceBuilder/InterfaceBuilder.c
         Source/Interface/InterfaceBuilder/InterfaceBuilder.h
         Source/Interface/MenuManager/menuManager.c
@@ -60,7 +60,7 @@ add_executable(TestMaxti
         _Testing/maxti/maxtiTest.c
         ExternalLibraries/fort/fort.c
         ExternalLibraries/fort/fort.h
-        Source/Interface/InterfaceConstants.h
+        Source/Interface/interfaceConstants.h
         Source/Interface/InterfaceBuilder/InterfaceBuilder.c
         Source/Interface/InterfaceBuilder/InterfaceBuilder.h
         Source/Interface/MenuManager/menuManager.c

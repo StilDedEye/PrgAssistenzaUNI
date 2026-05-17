@@ -4,74 +4,110 @@
 
 #include "menuManager.h"
 
-#include <stdlib.h>
+// Funzioni aggiuntive interne
+void launch_menu(
+    bool isSubMenu,
+    const char* title,
+    RequestList* requestList,
+    const char** MENU_SUBTREES,
+    size_t menuSubtreesLength,
+    const ActionFunc* MENU_ACTIONS,
+    size_t menuActionsLength
+    );
 
-void init_menu()
+void init_root_menu(RequestList* requestList)
 {
-    initialize_terminal();
-    cleanup_terminal();
-    print_logo();
-    print_credits();
+    ui_initialize_terminal();
+    ui_clear_terminal();
+    ui_print_logo();
+    ui_print_credits();
+    printf(_ANSI_HIDE_CURSOR); // Nasconde cursore del terminale
+    scanf("%s");
+    util_clear_input_buffer();
 
-    // Carica da file?
+    launch_menu(
+        false,
+        "Home",
+        requestList,
+        MENU_ROOT_SUBTREES,
+        sizeof(MENU_ROOT_SUBTREES) / sizeof(char*),
+        MENU_ROOT_ACTIONS,
+        sizeof(MENU_ROOT_ACTIONS) / sizeof(char*)
+        );
 }
 
-// void mostra_menu_principale(void) {
-//     int scelta;
-//     do {
-//
-//         stampa_grafica_menu_principale();
-//
-//
-//         scelta = prendi_input_intero(0, 4);
-//
-//
-//         switch (scelta) {
-//             case 1:
-//                 mostra_sottomenu_visualizza();
-//                 break;
-//             case 2:
-//                 mostra_sottomenu_gestione();
-//                 break;
-//             case 3:
-//                 mostra_sottomenu_filtri();
-//                 break;
-//             case 4:
-//                 mostra_sottomenu_report();
-//                 break;
-//             case 0:
-//                 salva_richieste_su_file("richieste.txt");
-//                 break;
-//         }
-//     } while (scelta != 0);
-// }
+void launch_menu(
+    bool isSubMenu,
+    const char* title,
+    RequestList *requestList,
+    const char **MENU_SUBTREES,
+    size_t menuSubtreesLength,
+    const ActionFunc *MENU_ACTIONS,
+    size_t menuActionsLength
+    )
+{
+    int choice = 0;
+    bool running = true;
 
-// void mostra_sottomenu_visualizza(void) {
-//     char scelta;
-//     do {
-//         stampa_grafica_sottomenu_visualizza();
-//         scelta = prendi_input_carattere();
-//
-//         switch (scelta) {
-//             case '1':
-//
-//                 azione_mostra_elenco_completo();
-//                 break;
-//             case '2':
-//                 azione_cerca_tramite_codice();
-//                 break;
-//             case '3':
-//                 azione_ordina_costo_stimato();
-//                 break;
-//             case '4':
-//                 mostra_mini_prompt_ordinamento_personalizzato();
-//                 break;
-//             case 'B':
-//             case 'b':
-//
-//                 break;
-//             default:
-//                 printf("Opzione non valida!\n");
-//         }
-//     } while (scelta != 'B' && scelta != 'b');
-// }
+    // Pulisce tutto quello che c'era prima
+    ui_clear_terminal();
+    while (running)
+    {
+        ui_reset_cursor();
+        ui_print_menu(title, isSubMenu, MENU_SUBTREES, menuSubtreesLength, choice);
+
+        int pressed_key = util_read_key();
+        switch (pressed_key)
+        {
+            case UTIL_KEY_UP:
+                if (choice-1 >= 0)
+                    choice--;
+                else
+                    choice = menuSubtreesLength - 1;
+                break;
+
+            case UTIL_KEY_DOWN:
+                if (choice+1 < menuSubtreesLength)
+                    choice++;
+                else
+                    choice = 0;
+                break;
+
+            case UTIL_KEY_ENTER:
+            case UTIL_KEY_RIGHT:
+                if (choice >= 0 && choice < menuActionsLength)
+                    MENU_ACTIONS[choice](requestList);
+                break;
+            case UTIL_KEY_LEFT:
+                running = false;
+            default:
+                break;
+        }
+    }
+    ui_clear_terminal();
+}
+
+//===========================================================================
+void launch_leaf_action_show_all(RequestList* requestList)
+{
+    ui_clear_terminal();
+    ui_print_requests_table((const Request**)requestList->requests, requestList->count);
+
+    ui_wait_for_keypress(_ANSI_STYLE_UNDERLINE"⮌ Premere enter per tornare indietro", UTIL_KEY_ENTER, UTIL_KEY_LEFT);
+    ui_clear_terminal();
+}
+
+
+void launch_subtree_vis_res(RequestList* requestList)
+{
+    launch_menu(
+        true,
+        "Home > Visualizza e Cerca Richieste",
+        requestList,
+        MENU_VIS_RES_SUBTREES,
+        sizeof(MENU_VIS_RES_SUBTREES) / sizeof(char*),
+        MENU_VIS_RES_ACTIONS,
+        sizeof(MENU_VIS_RES_ACTIONS) / sizeof(char*)
+        );
+}
+

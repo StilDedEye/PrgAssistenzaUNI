@@ -4,29 +4,37 @@
 
 #include "interfaceBuilder.h"
 
+/**
+ * @brief Stampa un messaggio di istruzioni per l'utente, invitandolo a premere il tasto ENTER per continuare.
+ */
+static void ui_print_menu_instructions(void);
+
 /*
  *  Controlla la presenza della macro _WIN32 definita dal compiler se se il sistema è windows
  *  ed in caso imposta la codifica utf-8
 */
-void initialize_terminal()
+void ui_initialize_terminal()
 {
     #ifdef _WIN32
         SetConsoleOutputCP(CP_UTF8);
     #endif
 }
 
-void cleanup_terminal()
+void ui_clear_terminal()
 {
     printf(_ANSI_RESET_CURSOR);
     printf(_ANSI_DELETE_REMAINING);
 }
 
-void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
+void ui_reset_cursor()
+{
+    printf(_ANSI_RESET_CURSOR);
+}
+
+void ui_print_requests_table(const Request* arr[], size_t n)
 {
     // Calcola numero header della tabella
     size_t cols_number = sizeof(requestFieldNames) / sizeof(char*);
-
-    cleanupTerminal ? cleanup_terminal() : printf("\n");
 
     // Alloca mem dinamica per la struttura della tabella, ritornando un puntatore
     ft_table_t *table = ft_create_table();
@@ -64,17 +72,25 @@ void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
     {
         for (size_t i = 0; i < n; i++)
         {
+            // Gestione casting estimated cost
             char bufferEstimatedCost[UTIL_FLOAT_PARSER_BUFFER_SIZE];
             bool hasEstimatedCost = false;
             if (get_request_estimated_cost(arr[i]) != VAL_UNDEFINED)
                 hasEstimatedCost = true;
 
+            // Gestione casting final cost
             char bufferFinalCost[UTIL_FLOAT_PARSER_BUFFER_SIZE];
             bool hasFinalCost = false;
             if (get_request_final_cost(arr[i]) != VAL_UNDEFINED)
                 hasFinalCost = true;
 
+            // buffer per data, usato nel parsing
             char bufferDate[UTIL_DATE_PARSER_BUFFER_SIZE];
+
+            char bufferDesc[64];
+            // snprintf con "%.*s" prende come argomento prima il limite (max_chars = 20) e poi la stringa originaria
+            // Se la stringa è più corta di max_chars, la copia tutta. Se è più lunga, la tronca.
+            snprintf(bufferDesc, sizeof(bufferDesc), "%.*s...", 20, get_request_description(arr[i]));
 
             ft_u8write_ln(table,
                 get_request_id(arr[i]),
@@ -83,14 +99,14 @@ void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
                 deviceNames[get_request_device(arr[i])],
                 priorityNames[get_request_priority(arr[i])],
                 requestStatusNames[get_request_status(arr[i])],
-                get_request_description(arr[i]),
+                bufferDesc,
                 hasEstimatedCost ?
-                    parseDoubleFloatToString(bufferEstimatedCost, get_request_estimated_cost(arr[i]))
+                    util_parse_double_to_string(bufferEstimatedCost, get_request_estimated_cost(arr[i]))
                     : "N/A",
                 hasFinalCost ?
-                    parseDoubleFloatToString(bufferFinalCost, get_request_final_cost(arr[i]))
+                    util_parse_double_to_string(bufferFinalCost, get_request_final_cost(arr[i]))
                     : "N/A",
-                parseDateToString(bufferDate, get_request_creation_date(arr[i]))
+                util_parse_date_to_string(bufferDate, get_request_creation_date(arr[i]))
                 );
         }
         // Imposta proprietà celle in posizione [*][*]: allinea al centro il contenuto
@@ -105,12 +121,168 @@ void build_requests_table(const Request* arr[], size_t n, bool cleanupTerminal)
     ft_destroy_table(table);
 }
 
+void ui_print_header(const char* title)
+{
+    // Lunghezza costante del menu
+    const int TOTAL_WIDTH = 68;
+    int title_len = (int)strlen(title);
+
+    // Spazio interno disponibile per il testo, considerando un padding destro e sinistro di 2 caratteri ciascuno
+    int inner_width = TOTAL_WIDTH - 4;
+
+    // Attiva colore primario
+    printf(_ANSI_COLOR_PRIMARY);
+
+    // Stampa il bordo superiore, del tipo "╔═════════╗"
+    printf("╔");
+    for (int i = 0; i < TOTAL_WIDTH - 2; i++) {
+        printf("═");
+    }
+    printf("╗\n");
+
+    // Stampa l'header, centrato, del tipo "║   TITOLO   ║"
+    printf("║ ");
+    if (title_len <= inner_width) {
+        // Calcola quanto padding interno serve a destra e a sinistra
+        int space_left = (inner_width - title_len) / 2;
+        int space_right = inner_width - title_len - space_left;
+
+        // Aggiunge padding a sinistra
+        for (int i = 0; i < space_left; i++) {
+            printf(" ");
+        }
+
+        // Aggiunge il titolo
+        printf("%s", title);
+
+        // Aggiunge padding a sinistra
+        for (int i = 0; i < space_right; i++) {
+            printf(" ");
+        }
+    } else {
+        /*
+         * Se viene passato un titolo più lungo di TOTAL_WIDTH, viene tagliato
+         * per non compromettere il terminale
+         */
+        printf("%.*s...", inner_width - 3, title);
+    }
+    printf(" ║\n");
+
+    // Stampa il bordo inferiore, del tipo "╚═════════╝"
+    printf("╚");
+    for (int i = 0; i < TOTAL_WIDTH - 2; i++) {
+        printf("═");
+    }
+    printf("╝");
+
+    // Resetta il colore per i testi successivi
+    printf(_ANSI_COLOR_STYLE_RESET "\n");
+}
+
+void ui_print_section_title(const char* section_name)
+{
+    if (section_name == NULL) return;
+
+    // Lunghezza del sottomenu
+    const int SECTION_WIDTH = 68;
+
+    printf(_ANSI_COLOR_SECONDARY);
+
+    // Bordo superiore del sottomenu
+    printf("┌─[ 🗁  %s ]", section_name);
+
+    /* Calcola quanti trattini mancano per completare la linea fino a SECTION_WIDTH
+        Sottrae i caratteri fissi: '┌', '─', '[', ' ', ' ', ' ', ']', '┐' (8 caratteri)
+        e i 2 caratteri dell'icona */
+    int written_chars = (int)strlen(section_name) + 10;
+    int remaining_dashes = SECTION_WIDTH - written_chars;
+
+    // Fallback se il nome è troppo lungo
+    if (remaining_dashes > 0) {
+        for (int i = 0; i < remaining_dashes; i++) {
+            printf("─");
+        }
+    }
+    printf("┐\n");
+
+    printf(_ANSI_COLOR_STYLE_RESET);
+}
+
+static void ui_print_menu_item(const char* item_name, bool selected)
+{
+    if (item_name == NULL) return;
+    if (selected)
+    {
+        char* str = malloc(strlen(item_name) + 1);
+        strcpy(str, item_name);
+        printf(_ANSI_COLOR_PRIMARY);
+        // strupr applica un uppercase su tutta la stringa
+        printf("\n➤  %s", strupr(str));
+        printf(_ANSI_COLOR_STYLE_RESET);
+        free(str);
+        str = NULL;
+    }
+    else printf(_ANSI_COLOR_TERTIARY "\n⬝  %s" _ANSI_COLOR_STYLE_RESET, item_name);
+}
+
+void ui_print_menu(const char* title, bool isSubMenu, const char* options[], size_t n_options, size_t selected_option)
+{
+    if (options == NULL || n_options == 0) return;
+
+    if (title != NULL)
+        if (isSubMenu)
+            ui_print_section_title(title);
+        else
+            ui_print_header(title);
+
+
+    for (size_t i = 0; i < n_options; i++)
+    {
+        ui_print_menu_item(options[i], i == selected_option);
+    }
+    ui_print_menu_instructions();
+}
+
+
+void ui_print_success(const char* message)
+{
+    printf("\n" _ANSI_COLOR_SUCCESS "[✓] %s" _ANSI_COLOR_STYLE_RESET "\n", message);
+}
+
+void ui_print_error(const char* message)
+{
+    printf("\n" _ANSI_COLOR_ERROR "[ERRORE] %s" _ANSI_COLOR_STYLE_RESET "\n", message);
+}
+
+void ui_print_warning(const char* message)
+{
+    printf("\n" _ANSI_COLOR_PRIMARY "[ATTENZIONE] %s" _ANSI_COLOR_STYLE_RESET "\n", message);
+}
+
+void ui_wait_for_keypress(const char* message, int keypress1, int keypress2)
+{
+    printf("\n " _ANSI_COLOR_TERTIARY "%s" _ANSI_COLOR_STYLE_RESET, message);
+    if (keypress2 == UTIL_KEY_UNDEFINED)
+        keypress2 = keypress1; // Se non è definito un secondo tasto
+
+    while (util_read_key() != keypress1 && util_read_key() != keypress2);
+}
+
+static void ui_print_menu_instructions(void)
+{
+    printf("\n\n" _ANSI_STYLE_FAINT
+           "  [↑↓] Naviga   •   [→ / Enter] Conferma   •   [←] Torna indietro\x1b[K\n"
+           _ANSI_COLOR_STYLE_RESET);
+}
 
 
 
-void print_logo(void) {
-    // \033[1;33m ANSI per attivare il colore giallo/arancione
-    printf("\033[1;33m");
+
+
+
+void ui_print_logo(void)
+{
+    printf(_ANSI_COLOR_PRIMARY);
 
     printf(".------------------------------------------------------------.\n");
     printf("|   ██████╗ ██████╗ ██╗███╗   ███╗                           |\n");
@@ -128,33 +300,30 @@ void print_logo(void) {
     printf("|   ╚══════╝   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝ ╚══════╝   |\n");
     printf("'------------------------------------------------------------'\n");
 
-    printf("\033[0m"); // RESET del colore
+    printf(_ANSI_COLOR_STYLE_RESET); // RESET del colore
     printf("\n");
 }
 
-void print_credits(void) {
-    const char *YELLOW = "\033[1;33m";
-    const char *WHITE = "\033[1;37m";
-    const char *RESET = "\033[0m";
+void ui_print_credits(void) {
 
-    printf("%s.------------------------------------------------------------.%s\n", YELLOW, RESET);
+    printf("%s.------------------------------------------------------------.%s\n", _ANSI_COLOR_PRIMARY, _ANSI_COLOR_STYLE_RESET);
 
     // Riga: Made by
     printf("%s| %s%-10s%s%-49s%s|%s\n",
-           YELLOW, YELLOW, "Made by:", WHITE, "Andrea Silvani, Alessandro Zaccagnino", YELLOW, RESET);
+           _ANSI_COLOR_PRIMARY, _ANSI_COLOR_PRIMARY, "Made by:", _ANSI_COLOR_SECONDARY, "Andrea Silvani, Alessandro Zaccagnino", _ANSI_COLOR_PRIMARY, _ANSI_COLOR_STYLE_RESET);
 
     // Riga: Corso
     printf("%s| %s%-10s%s%-49s%s|%s\n",
-           YELLOW, YELLOW, "Corso:", WHITE, "Laboratorio di Informatica | Primo Appello", YELLOW, RESET);
+           _ANSI_COLOR_PRIMARY, _ANSI_COLOR_PRIMARY, "Corso:", _ANSI_COLOR_SECONDARY, "Laboratorio di Informatica | Primo Appello", _ANSI_COLOR_PRIMARY, _ANSI_COLOR_STYLE_RESET);
 
     // Riga: Anno
     printf("%s| %s%-10s%s%-49s%s|%s\n",
-           YELLOW, YELLOW, "Anno:", WHITE, "2025/2026", YELLOW, RESET);
+           _ANSI_COLOR_PRIMARY, _ANSI_COLOR_PRIMARY, "Anno:", _ANSI_COLOR_SECONDARY, "2025/2026", _ANSI_COLOR_PRIMARY, _ANSI_COLOR_STYLE_RESET);
 
     // Riga: System
     printf("%s| %s%-10s%s%-49s%s|%s\n",
-           YELLOW, YELLOW, "Progetto:", WHITE, "Gestione Richieste di Assistenza Tecnica - v1.0", YELLOW, RESET);
+           _ANSI_COLOR_PRIMARY, _ANSI_COLOR_PRIMARY, "Progetto:", _ANSI_COLOR_SECONDARY, "Gestione Richieste di Assistenza Tecnica - v1.0", _ANSI_COLOR_PRIMARY, _ANSI_COLOR_STYLE_RESET);
 
-    printf("%s'------------------------------------------------------------'%s\n", YELLOW, RESET);
+    printf("%s'------------------------------------------------------------'%s\n", _ANSI_COLOR_PRIMARY, _ANSI_COLOR_STYLE_RESET);
     printf("\n");
 }
