@@ -91,7 +91,7 @@ void launch_menu(
 void launch_leaf_action_show_all(RequestList* requestList)
 {
     ui_clear_terminal();
-    ui_print_requests_table((const Request**)requestList->requests, requestList->count);
+    ui_print_requests_table(requestList->requests, requestList->count);
 
     ui_wait_for_keypress(_ANSI_STYLE_UNDERLINE"⮌ Premere enter per tornare indietro", UTIL_KEY_ENTER, UTIL_KEY_LEFT);
     ui_clear_terminal();
