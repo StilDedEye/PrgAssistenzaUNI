@@ -78,7 +78,7 @@ void request_list_sort(RequestList *requestList,
  *          alla luce della direzione di ordinamento specificata, restituendo true se il risultato indica che il primo elemento dovrebbe precedere il secondo
  *          in base all'ordine richiesto.
  */
-bool sorting_order_control(int result, int order);
+bool sorting_order_control(bool result, int order);
 
 /*
  * ------------------------

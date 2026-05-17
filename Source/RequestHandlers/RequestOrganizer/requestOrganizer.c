@@ -92,15 +92,15 @@ void request_list_sort(RequestList *requestList,
  * ------------------------
  */
 
-bool sorting_order_control(int result, int order)
+bool sorting_order_control(bool result, int order)
 {
     if (order == CRESCENT_SORTING)
     {
-        return result >= 0;
+        return result;
     }
     else if (order == DESCENT_SORTING)
     {
-        return result <= 0;
+        return !result;
     }
     return false;
 }
@@ -126,11 +126,11 @@ bool sort_by_client_name(Request *req1, Request *req2, int order)
     if ((strcmp(req1_client_name, req2_client_name) <= 0))
     {
         // req1 viene prima di req2
-        return sorting_order_control(1, order);
+        return sorting_order_control(true, order);
     } else
     {
         // req2 viene prima di req1
-        return sorting_order_control(-1, order);
+        return sorting_order_control(false, order);
     }
 }
 
@@ -144,10 +144,10 @@ bool sort_by_estimated_cost(Request *req1, Request *req2, int order)
 
     if (req1_estimated_cost < req2_estimated_cost)
     {
-        return sorting_order_control(1, order);
+        return sorting_order_control(true, order);
     } else if (req1_estimated_cost > req2_estimated_cost)
     {
-        return sorting_order_control(-1, order);
+        return sorting_order_control(false, order);
     } else
     {
         return false;
