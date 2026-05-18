@@ -103,6 +103,15 @@ bool filter_by_priority(Request* request, void *filterValue)
     return get_request_priority(request) == filterPriority;
 }
 
+bool filter_by_device(Request* request, void *filterValue)
+{
+    if (request == NULL || filterValue == NULL)
+        return false;
+
+    Device filterDevice = *(Device*)filterValue;
+    return get_request_device(request) == filterDevice;
+}
+
 bool filter_by_client_name(Request* request, void *filterValue)
 {
     if (request == NULL || filterValue == NULL)

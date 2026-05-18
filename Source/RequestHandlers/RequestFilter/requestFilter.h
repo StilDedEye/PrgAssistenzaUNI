@@ -108,4 +108,13 @@ bool filter_by_client_id(Request *request, void *filterValue);
  */
 bool filter_by_request_id(Request *request, void *filterValue);
 
+/**
+ * @brief Criterio: seleziona le richieste che riguardano un dispositivo specifico.
+ * @param request Puntatore alla Request da controllare.
+ * @param filterValue Puntatore a un valore intero (Device) da confrontare.
+ * @return true se il dispositivo della request corrisponde a * (Device*)filterValue, false altrimenti.
+ * @details Se request è NULL o filterValue è NULL, restituisce false.
+ */
+bool filter_by_device(Request *request, void *filterValue);
+
 #endif //PRGASSISTENZAUNI_REQUESTFILTER_H
