@@ -241,3 +241,38 @@ bool sort_by_status(Request *req1, Request *req2, int order)
         return sorting_order_control(false, order);
     }
 }
+
+bool sort_by_request_id(Request *req1, Request *req2, int order)
+{
+    if (req1 == NULL || req2 == NULL)
+        return false;
+
+    const char *req1_id = get_request_id(req1);
+    const char *req2_id = get_request_id(req2);
+
+    if (req1_id == NULL || req2_id == NULL)
+        return false;
+
+    //Puntatori alla parte numerica dell'ID (dopo il trattino)
+    const char *id_num_ptr1 = strchr(req1_id, '-');
+    const char *id_num_ptr2 = strchr(req2_id, '-');
+
+    if (id_num_ptr1 == NULL || id_num_ptr2 == NULL)
+        return false;
+
+    //Conversione da string a int
+    int id_num1 = atoi(id_num_ptr1 + 1);
+    int id_num2 = atoi(id_num_ptr2 + 1);
+
+    //Mantiene la stabilità (se le due variabili sono uguali mantiene l'ordine originale)
+    if (id_num1 == id_num2) return true;
+
+    // strcmp ritorna int <= se la prima stringa viene prima della seconda
+    if (id_num1 < id_num2)
+    {
+        return sorting_order_control(true, order);
+    } else
+    {
+        return sorting_order_control(false, order);
+    }
+}

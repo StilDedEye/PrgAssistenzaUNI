@@ -158,5 +158,18 @@ bool sort_by_device(Request *req1, Request *req2, int order);
  */
 bool sort_by_status(Request *req1, Request *req2, int order);
 
+/**
+ * @brief Comparatore per ordinare le richieste identificativo richiesta.
+ * @param req1 Prima richiesta da confrontare.
+ * @param req2 Seconda richiesta da confrontare.
+ * @param order Direzione di ordinamento: `CRESCENT_SORTING` oppure `DESCENT_SORTING`.
+ * @return true se l'identificativo di `req1` deve precedere quello di `req2` secondo il criterio definito,
+ *         false altrimenti.
+ * @details Questa funzione confronta gli identificativi associati alle due richieste in modo numerico,
+ *          applicando la direzione di ordinamento specificata.
+ *          La stringa dell'ID viene separata, ottenendo solo la parte numerica e trasformandola in int
+ */
+bool sort_by_request_id(Request *req1, Request *req2, int order);
+
 
 #endif //PRGASSISTENZAUNI_REQUESTORGANIZER_H
