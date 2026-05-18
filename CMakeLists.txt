@@ -77,4 +77,7 @@ add_executable(TestMaxti
         Source/RequestHandlers/RequestOrganizer/requestOrganizer.h
         Source/RequestHandlers/RequestOrganizer/requestOrganizer.c
         Source/RequestHandlers/RequestFilter/requestFilter.c
-        Source/RequestHandlers/RequestFilter/requestFilter.h)
+        Source/RequestHandlers/RequestFilter/requestFilter.h
+        Source/RequestHandlers/RequestStats/requestStats.c
+        Source/RequestHandlers/RequestStats/requestStats.h
+)
