@@ -22,11 +22,12 @@
       * @brief Cancella il testo della riga corrente nel terminale.
       * @details Utilizza la sequenza di escape ANSI per cancellare tutti i caratteri a partire dalla posizione attuale del cursore
       *          fino alla fine della riga. Il cursore non viene spostato.
+      * @details Usa un carriage return ed una escape ANSI per cancellare la riga.
       * @code
       * printf("%s Utente n° %d", _ANSI_DELETE_LINE, 1);
       * @endcode
       */
-     #define _ANSI_DELETE_LINE "\033[K"
+     #define _ANSI_DELETE_LINE "\r\x1b[K"
 
      /**
       * @brief Cancella tutto il testo a partire dalla posizione attuale del cursore fino alla fine dello schermo.

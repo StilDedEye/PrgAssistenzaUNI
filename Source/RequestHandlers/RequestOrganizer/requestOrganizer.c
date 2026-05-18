@@ -60,8 +60,7 @@ void merge(Request **arr, size_t left, size_t mid, size_t right,
     free(right_arr);
 }
 
-void merge_sort(Request **arr, size_t left, size_t right,
-    bool (*criteria)(Request*, Request*, int), int order)
+void merge_sort(Request **arr, size_t left, size_t right, bool (*criteria)(Request*, Request*, int), int order)
 {
     if (left < right)
     {

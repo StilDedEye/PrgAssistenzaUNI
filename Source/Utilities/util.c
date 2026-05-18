@@ -55,7 +55,7 @@ int util_read_key(void)
         ch = _getch(); // Legge il secondo codice specifico
 
         if (ch == 72) return UTIL_KEY_UP;
-        if (ch == 80) return UTIL_KEY_DOWN;
+        if (ch == 80) return UTIL_KEY_DOWN; 
         if (ch == 75) return UTIL_KEY_LEFT;
         if (ch == 77) return UTIL_KEY_RIGHT;
     }

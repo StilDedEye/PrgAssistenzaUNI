@@ -31,7 +31,7 @@ void ui_reset_cursor()
     printf(_ANSI_RESET_CURSOR);
 }
 
-void ui_print_requests_table(const Request* arr[], size_t n)
+void ui_print_requests_table(const Request* arr[], size_t n, int selected_column_index)
 {
     // Calcola numero header della tabella
     size_t cols_number = sizeof(requestFieldNames) / sizeof(char*);
@@ -49,14 +49,18 @@ void ui_print_requests_table(const Request* arr[], size_t n)
     ft_set_cell_span(table, 0, 0, cols_number);
     // Imposta proprietà celle in posizione [0][0]: imposta colore e allineamento
     ft_set_cell_prop(table, 0, 0, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
-    ft_set_cell_prop(table, 0, 0, FT_CPROP_CONT_FG_COLOR, FT_COLOR_RED);
+    ft_set_cell_prop(table, 0, 0, FT_CPROP_CONT_FG_COLOR, FT_COLOR_YELLOW);
 
 
-    // Imposta proprietà celle in posizione [0][*]: il tipo di riga è un header
+    // Imposta proprietà celle in posizione [1][*]: il tipo di riga è un header
     ft_set_cell_prop(table, 1, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
 
     // Scrive i nomi delle colonne (header)
-    ft_row_write_ln( table, cols_number, requestFieldNames);
+    ft_row_write_ln(table, cols_number, requestFieldNames);
+    // Evidenzia colonna selezionata, se parametro diverso da -1
+    if (selected_column_index != -1 && selected_column_index < cols_number)
+        ft_set_cell_prop(table, 1, selected_column_index, FT_CPROP_CONT_FG_COLOR, FT_COLOR_LIGHT_GREEN);
+
 
     // Scrive le righe della tabella
     if (n == 0)
@@ -108,6 +112,10 @@ void ui_print_requests_table(const Request* arr[], size_t n)
                     : "N/A",
                 util_parse_date_to_string(bufferDate, get_request_creation_date(arr[i]))
                 );
+            // Evidenzia elementi della colonna selezionata, se parametro diverso da -1
+            if (selected_column_index != -1 && selected_column_index < cols_number)
+                ft_set_cell_prop(table, i+2, selected_column_index, FT_CPROP_CONT_FG_COLOR, FT_COLOR_LIGHT_GREEN);
+
         }
         // Imposta proprietà celle in posizione [*][*]: allinea al centro il contenuto
         ft_set_cell_prop(table, FT_ANY_ROW, FT_ANY_ROW, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
@@ -184,7 +192,7 @@ void ui_print_section_title(const char* section_name)
     if (section_name == NULL) return;
 
     // Lunghezza del sottomenu
-    const int SECTION_WIDTH = 68;
+    const int SECTION_WIDTH = 100;
 
     printf(_ANSI_COLOR_SECONDARY);
 
@@ -205,6 +213,15 @@ void ui_print_section_title(const char* section_name)
     }
     printf("┐\n");
 
+    printf(_ANSI_COLOR_STYLE_RESET);
+}
+
+void ui_print_menu_path(const char* path)
+{
+    printf(_ANSI_COLOR_SECONDARY);
+
+    // Bordo superiore del sottomenu
+    printf("┌─[ 🗁  %s ]\n", path);
     printf(_ANSI_COLOR_STYLE_RESET);
 }
 
@@ -273,6 +290,77 @@ static void ui_print_menu_instructions(void)
     printf("\n\n" _ANSI_STYLE_FAINT
            "  [↑↓] Naviga   •   [→ / Enter] Conferma   •   [←] Torna indietro\x1b[K\n"
            _ANSI_COLOR_STYLE_RESET);
+}
+
+void ui_get_input_string(const char* prompt, char* output_buffer, size_t buffer_size)
+{
+    if (prompt == NULL || output_buffer == NULL || buffer_size == 0) return;
+
+    // Mostra il prompt in uno stile secondario/sbiadito per non appesantire la TUI
+    printf("  " _ANSI_STYLE_FAINT "%s " _ANSI_COLOR_STYLE_RESET, prompt);
+
+    // Mostra temporaneamente il cursore per far capire all'utente dove scrive
+    printf(_ANSI_SHOW_CURSOR);
+
+    // Legge la stringa
+    if (fgets(output_buffer, (int)buffer_size, stdin) != NULL)
+    {
+        // Rimuove il '\n' alla fine della stringa se presente
+        size_t len = strlen(output_buffer);
+        if (len > 0 && output_buffer[len - 1] == '\n') {
+            output_buffer[len - 1] = '\0';
+        }
+    }
+
+    printf(_ANSI_HIDE_CURSOR);
+}
+
+bool ui_prompt_confirmation(const char* message, const char* choice1, const char* choice2)
+{
+    if (message == NULL) return false;
+
+    bool choice = false;
+    bool loop = true;
+
+    printf(_ANSI_HIDE_CURSOR);
+
+    while (loop)
+    {
+        printf(_ANSI_DELETE_LINE);
+
+        // Stampa il messaggio
+        printf("  " _ANSI_STYLE_FAINT "%s " _ANSI_COLOR_STYLE_RESET, message);
+
+        // Se choice è false, evidenzia [Choice1] in grassetto/colore, altrimenti lo lascia standard
+        if (choice == false) {
+            printf(_ANSI_STYLE_BOLD _ANSI_COLOR_PRIMARY "► %s" _ANSI_COLOR_STYLE_RESET "   %s  ", choice1, choice2);
+        } else {
+            printf("  %s   " _ANSI_STYLE_BOLD _ANSI_COLOR_PRIMARY "► %s" _ANSI_COLOR_STYLE_RESET "  ", choice1, choice2);
+        }
+        fflush(stdout); // forza il buffer a svuotarsi, mandando in output il testo
+
+        int pressed_key = util_read_key();
+        switch (pressed_key)
+        {
+            // Con le frecce Destra/Sinistra/Su/Giù si inverte la selezione
+            case UTIL_KEY_LEFT:
+            case UTIL_KEY_RIGHT:
+            case UTIL_KEY_UP:
+            case UTIL_KEY_DOWN:
+                choice = !choice; // Inverte choice1 e choice2
+                break;
+
+            // Invio conferma la scelta attuale
+            case UTIL_KEY_ENTER:
+                loop = false;
+                break;
+
+            default:
+                break;
+        }
+    }
+    printf("\n");
+    return choice;
 }
 
 

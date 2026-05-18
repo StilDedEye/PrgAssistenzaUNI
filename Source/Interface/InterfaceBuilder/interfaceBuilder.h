@@ -49,9 +49,13 @@
      * @details Utilizza la libreria fort per creare una tabella formattata con i dati delle richieste.
      * @param arr Vettore di struct Request
      * @param n Numero di elementi nel vettore arr
+     * @param selected_column_index Indice della colonna da evidenziare (es. per indicare il criterio di ordinamento).
+     * Deve essere un valore tra 0 e il numero di colonne - 1.
+     *
+     * @details Se selected_column_index = -1 allora non verrà evidenziata nessuna colonna
      * @see Entities/Request/*
      */
-    void ui_print_requests_table(const Request* arr[], size_t n);
+    void ui_print_requests_table(const Request* arr[], size_t n, int selected_column_index);
 
     /**
      * @brief Costruisce e visualizza la tabella dei clienti.
@@ -94,6 +98,14 @@
      */
     void ui_print_menu(const char* title, bool isSubMenu, const char* options[], size_t n_options, size_t selected_option);
 
+
+    /**
+     * @brief Stampa a schermo il percorso di navigazione corrente, ad esempio "Home > Visualizza Richieste > Dettagli Richiesta".
+     * @param path
+     */
+    void ui_print_menu_path(const char* path);
+
+
     /**
      * @brief Stampa un messaggio di successo formattato a schermo.
      * @param message Messaggio da stampare
@@ -124,6 +136,26 @@
      */
     void ui_wait_for_keypress(const char* message, int keypress1, int keypress2);
 
+    /**
+     * @brief Mostra un prompt all'utente e legge una stringa di input, memorizzandola in output_buffer.
+     * @param prompt Messaggio da mostrare all'utente prima del prompt di input.
+     * @param output_buffer Buffer fornito dal chiamante dove verrà scritta la stringa di input. È responsabilità del
+     * chiamante assicurare che il buffer sia abbastanza grande.
+     * @param buffer_size Grandezza del buffer (output_buffer) in caratteri.
+     */
+    void ui_get_input_string(const char* prompt, char* output_buffer, size_t buffer_size);
+
+    /**
+     * @brief Mostra un prompt di conferma all'utente con un messaggio personalizzato e due opzioni (Choice1/Choice2),
+     * rispettivamente gestite come false e true.
+     * L'utente può navigare tra le opzioni usando le frecce e confermare la scelta con Invio.
+     * @param message Il messaggio da mostrare all'utente.
+     * @param choice1 Testo dell'opzione 1 (associata a false)
+     * @param choice2 Testo dell'opzione 2 (associata a true)
+     * @return false = scelta 1
+     * @return true = scelta 2
+     */
+    bool ui_prompt_confirmation(const char* message, const char* choice1, const char* choice2);
 
     /**
      * @brief Stampa il logo del gruppo.
@@ -134,6 +166,8 @@
     * @brief Stampa i crediti del progetto.
     */
     void ui_print_credits(void);
+
+    #define UI_INPUT_BUFFER_SIZE 1024
 
 
 #endif

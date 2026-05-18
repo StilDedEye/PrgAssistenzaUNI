@@ -112,6 +112,8 @@ void util_clear_input_buffer(void);
  * - `UTIL_KEY_UP` se è stata premuta la freccia SU
  * - `UTIL_KEY_DOWN` se è stata premuta la freccia GIÙ
  * - `UTIL_KEY_ENTER` se è stato premuto il tasto INVIO
+ * - `UTIL_KEY_RIGHT` se è stata premuta la freccia DESTRA
+ * - `UTIL_KEY_LEFT` se è stata premuta la freccia SINISTRA
  * - `UTIL_KEY_OTHER` per qualsiasi altro tasto
  * @see UTIL_KEY_UP, UTIL_KEY_DOWN, UTIL_KEY_ENTER, UTIL_KEY_OTHER
  */
