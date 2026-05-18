@@ -3,12 +3,9 @@
 //
 
 #include "requestStats.h"
-#include "../../Entities/Client/client.h"
 #include "../../Entities/Request/request.h"
-#include "../../Constants/constants.h"
 #include "../../Entities/RequestList/requestList.h"
 #include "../../Interface/InterfaceBuilder/interfaceBuilder.h"
-#include "../../RequestHandlers/RequestOrganizer/requestOrganizer.h"
 #include "../../RequestHandlers/RequestFilter/requestFilter.h"
 
 void get_average_cost(RequestList *requestList, double avgByType[], size_t typesNumber, statsCriteria statsCriteria)

@@ -4,13 +4,10 @@
 
 #ifndef PRGASSISTENZAUNI_REQUESTSTATS_H
 #define PRGASSISTENZAUNI_REQUESTSTATS_H
-#include "../../Entities/Client/client.h"
 #include "../../Entities/Request/request.h"
-#include "../../Constants/constants.h"
 #include "../../Entities/RequestList/requestList.h"
 #include "../../Interface/InterfaceBuilder/interfaceBuilder.h"
 #include "../../RequestHandlers/RequestOrganizer/requestOrganizer.h"
-#include "../../RequestHandlers/RequestFilter/requestFilter.h"
 
 /**
  * @typedef statsCriteria

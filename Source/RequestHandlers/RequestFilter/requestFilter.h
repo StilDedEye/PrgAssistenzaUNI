@@ -7,8 +7,6 @@
 
 #include "../../Entities/RequestList/requestList.h"
 #include "../../Entities/Request/request.h"
-#include "../../Entities/Client/client.h"
-#include <stdlib.h>
 #include <stdbool.h>
 
 /**
