@@ -51,8 +51,8 @@
      * @param n Numero di elementi nel vettore arr
      * @param selected_column_index Indice della colonna da evidenziare (es. per indicare il criterio di ordinamento).
      * Deve essere un valore tra 0 e il numero di colonne - 1.
+     * Se -1 allora non verrà evidenziata nessuna colonna
      *
-     * @details Se selected_column_index = -1 allora non verrà evidenziata nessuna colonna
      * @see Entities/Request/*
      */
     void ui_print_requests_table(const Request* arr[], size_t n, int selected_column_index);
