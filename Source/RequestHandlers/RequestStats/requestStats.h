@@ -30,7 +30,7 @@ typedef bool (*statsCriteria)(Request *request, void* filterValue);
  * @details
  * La funzione scorre le richieste presenti in `requestList`, applica il criterio `statsCriteria`
  * e aggiorna l'array `avgByType` con i valori medi per ogni tipo.
- * La media viene calcolata sul costo finale se disponibile, altrimenti su quello stimato
+ * La media viene calcolata sul costo finale se disponibile, altrimenti su quello stimato.
  * Il chiamante deve garantire che `avgByType` sia allocato con almeno `typesNumber` elementi.
  * In caso di input non validi (ad esempio `requestList == NULL`, `avgByType == NULL`, `typesNumber == 0`),
  * l'implementazione dovrebbe terminare senza modificare i dati.
@@ -47,7 +47,7 @@ void get_average_cost(RequestList *requestList, double avgByType[], size_t types
  * La funzione scorre le richieste presenti in `requestList`, applica il criterio `statsCriteria`
  * e aggiorna `maxByType` con il valore massimo rilevato per ogni tipo.
  * Il chiamante deve garantire che `maxByType` sia allocato con almeno `typesNumber` elementi.
- * Il massimo viene calcolato sul costo finale se disponibile, altrimenti su quello stimato
+ * Il massimo viene calcolato sul costo finale se disponibile, altrimenti su quello stimato.
  * In caso di input non validi (ad esempio `requestList == NULL`, `maxByType == NULL`, `typesNumber == 0`),
  * l'implementazione dovrebbe terminare senza modificare i dati.
  */
@@ -63,7 +63,7 @@ void get_max_cost(RequestList *requestList, double maxByType[], size_t typesNumb
  * La funzione scorre le richieste presenti in `requestList`, applica il criterio `statsCriteria`
  * e aggiorna `minByType` con il valore minimo rilevato per ogni tipo.
  * Il chiamante deve garantire che `minByType` sia allocato con almeno `typesNumber` elementi.
- * Il minimo viene calcolato sul costo finale se disponibile, altrimenti su quello stimato
+ * Il minimo viene calcolato sul costo finale se disponibile, altrimenti su quello stimato.
  * In caso di input non validi (ad esempio `requestList == NULL`, `minByType == NULL`, `typesNumber == 0`),
  * l'implementazione dovrebbe terminare senza modificare i dati.
  */
