@@ -41,6 +41,39 @@
 /** @} */
 
 
+// Variabile globale che associa un indice da 0 a 11 al nome del mese corrispondente
+static char* UTIL_MONTH_NAMES[] = {
+ "Gennaio",
+ "Febbraio",
+ "Marzo",
+ "Aprile",
+ "Maggio",
+ "Giugno",
+ "Luglio",
+ "Agosto",
+ "Settembre",
+ "Ottobre",
+ "Novembre",
+ "Dicembre"
+};
+
+/**
+ * @brief Restituisce il numero di giorni in un dato mese e anno, tenendo conto anche degli anni bisestili.
+ * @param month Numero del mese (0-11)
+ * @param year Anno (es. 2024)
+ * @return Numero di giorni nel mese specificato (0-30)
+ * */
+int util_get_month_days(int month, int year);
+
+/**
+ * @brief Costruisce una struct tm a partire da giorno, mese e anno.
+ * @param day Numero del giorno (1-31)
+ * @param month Numero del mese (0-11)
+ * @param year Anno
+ * @return Una struct tm con i campi tm_year, tm_mon e tm_mday valorizzati in base ai parametri di input. Gli altri campi sono azzerati.
+ */
+struct tm build_date(int day, int month, int year);
+
 
 /**
  * @brief Dimensione del buffer usato per convertire un double in stringa
@@ -64,13 +97,16 @@
  *                  grande almeno quanto `UTIL_PARSER_BUFFER_SIZE`.
  * @param value     Valore double/float da convertire in stringa.
  *
+ * @param additionalSuffix Stringa opzionale da aggiungere alla fine del numero, ad esempio per indicare l'unità di misura (es. "€").
+ * Se NULL o vuota, non viene aggiunta alcuna stringa.
+ *
  * @return Ritorna il puntatore passato in `outBuffer`.
  * @code
- * char buf[UTIL_PARSER_BUFFER_SIZE];
+ * char buf[UTIL_FLOAT_PARSER_BUFFER_SIZE];
  * parseDoubleFloatToString(buf, 3.14159);
  * printf("valore: %s\n", buf);
  */
-char* util_parse_double_to_string (char* outBuffer, double value);
+char* util_parse_double_to_string (char* outBuffer, double value, const char* additionalSuffix);
 
 /**
  * @brief Converte una data del tipo {time.h --> struct tm} in una rappresentazione testuale.

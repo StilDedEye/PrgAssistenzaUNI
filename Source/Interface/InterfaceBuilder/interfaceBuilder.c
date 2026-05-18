@@ -4,6 +4,12 @@
 
 #include "interfaceBuilder.h"
 
+
+#define FIELD_DAY 0
+#define FIELD_MONTH 1
+#define FIELD_YEAR 2
+
+
 /**
  * @brief Stampa un messaggio di istruzioni per l'utente, invitandolo a premere il tasto ENTER per continuare.
  */
@@ -91,10 +97,10 @@ void ui_print_requests_table(const Request* arr[], size_t n, int selected_column
             // buffer per data, usato nel parsing
             char bufferDate[UTIL_DATE_PARSER_BUFFER_SIZE];
 
-            char bufferDesc[64];
-            // snprintf con "%.*s" prende come argomento prima il limite (max_chars = 20) e poi la stringa originaria
+            char bufferDesc[DESCRIPTION_BUFFER_SIZE];
+            // snprintf con "%.*s" prende come argomento prima il limite (max_chars = 60) e poi la stringa originaria
             // Se la stringa è più corta di max_chars, la copia tutta. Se è più lunga, la tronca.
-            snprintf(bufferDesc, sizeof(bufferDesc), "%.*s...", 20, get_request_description(arr[i]));
+            snprintf(bufferDesc, sizeof(bufferDesc), "%.*s...", 60, get_request_description(arr[i]));
 
             ft_u8write_ln(table,
                 get_request_id(arr[i]),
@@ -105,10 +111,10 @@ void ui_print_requests_table(const Request* arr[], size_t n, int selected_column
                 requestStatusNames[get_request_status(arr[i])],
                 bufferDesc,
                 hasEstimatedCost ?
-                    util_parse_double_to_string(bufferEstimatedCost, get_request_estimated_cost(arr[i]))
+                    util_parse_double_to_string(bufferEstimatedCost, get_request_estimated_cost(arr[i]), "€")
                     : "N/A",
                 hasFinalCost ?
-                    util_parse_double_to_string(bufferFinalCost, get_request_final_cost(arr[i]))
+                    util_parse_double_to_string(bufferFinalCost, get_request_final_cost(arr[i]), "€")
                     : "N/A",
                 util_parse_date_to_string(bufferDate, get_request_creation_date(arr[i]))
                 );
@@ -296,8 +302,7 @@ void ui_get_input_string(const char* prompt, char* output_buffer, size_t buffer_
 {
     if (prompt == NULL || output_buffer == NULL || buffer_size == 0) return;
 
-    // Mostra il prompt in uno stile secondario/sbiadito per non appesantire la TUI
-    printf("  " _ANSI_STYLE_FAINT "%s " _ANSI_COLOR_STYLE_RESET, prompt);
+    printf(_ANSI_STYLE_FAINT "%s [MAX %zu caratteri]: " _ANSI_COLOR_STYLE_RESET, prompt, buffer_size - 1);
 
     // Mostra temporaneamente il cursore per far capire all'utente dove scrive
     printf(_ANSI_SHOW_CURSOR);
@@ -363,7 +368,256 @@ bool ui_prompt_confirmation(const char* message, const char* choice1, const char
     return choice;
 }
 
+int ui_prompt_selection(const char* prompt, const char* options[], size_t options_count)
+{
+    if (prompt == NULL || options == NULL || options_count == 0) return -1;
 
+    int current_index = 0;
+    bool loop = true;
+
+    printf(_ANSI_HIDE_CURSOR);
+
+    while (loop)
+    {
+        printf(_ANSI_DELETE_LINE);
+
+        // Stampa il prompt
+        printf( _ANSI_STYLE_FAINT "%s: " _ANSI_COLOR_STYLE_RESET, prompt);
+
+        // Stampa l'opzione attualmente selezionata con la freccia
+        printf(_ANSI_STYLE_BOLD _ANSI_COLOR_PRIMARY "► %s" _ANSI_COLOR_STYLE_RESET, options[current_index]);
+        fflush(stdout);
+
+        int pressed_key = util_read_key();
+        switch (pressed_key)
+        {
+            // Freccia SU: va all'elemento precedente (con carosello circolare se arriva a 0)
+            case UTIL_KEY_UP:
+                if (current_index - 1 >= 0) {
+                    current_index--;
+                } else {
+                    current_index = (int)options_count - 1;
+                }
+                break;
+
+            // Freccia GIÙ: va all'elemento successivo (ritorna a 0 se supera il limite)
+            case UTIL_KEY_DOWN:
+                if (current_index + 1 < (int)options_count) {
+                    current_index++;
+                } else {
+                    current_index = 0;
+                }
+                break;
+
+            // Invio: conferma e blocca il loop
+            case UTIL_KEY_ENTER:
+                loop = false;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    printf("\n");
+    return current_index;
+}
+
+void ui_prompt_date (const char* prompt, int* day, int* month, int* year)
+{
+    if (prompt == NULL || day == NULL || month == NULL || year == NULL) return;
+
+    bool loop = true;
+
+    printf(_ANSI_HIDE_CURSOR);
+
+    int selected_field = FIELD_DAY;
+    int selected_day = 0;
+    int selected_month = 0;
+    int selected_year = 2026;
+
+
+    while (loop)
+    {
+        printf(_ANSI_DELETE_LINE);
+
+        // Stampa il prompt
+        printf(_ANSI_STYLE_FAINT "%s: " _ANSI_COLOR_STYLE_RESET, prompt);
+
+        // Stampa uno dei 3 campi giorno mese anno selezionati attualmente
+        switch (selected_field)
+        {
+            case FIELD_DAY: // Focus su Giorno
+                printf(_ANSI_STYLE_BOLD _ANSI_COLOR_PRIMARY "► %02d" _ANSI_COLOR_STYLE_RESET _ANSI_STYLE_FAINT "/%02d/%04d" _ANSI_COLOR_STYLE_RESET, selected_day + 1, selected_month + 1, selected_year);
+                break;
+            case FIELD_MONTH: // Focus su Mese
+                printf("  " _ANSI_STYLE_FAINT "%02d/" _ANSI_COLOR_STYLE_RESET _ANSI_STYLE_BOLD _ANSI_COLOR_PRIMARY "► %02d" _ANSI_COLOR_STYLE_RESET _ANSI_STYLE_FAINT "/%04d" _ANSI_COLOR_STYLE_RESET, selected_day + 1, selected_month + 1, selected_year);
+                break;
+            case FIELD_YEAR: // Focus su Anno
+                printf("  " _ANSI_STYLE_FAINT "%02d/%02d/" _ANSI_COLOR_STYLE_RESET _ANSI_STYLE_BOLD _ANSI_COLOR_PRIMARY "► %04d" _ANSI_COLOR_STYLE_RESET, selected_day + 1, selected_month + 1, selected_year);
+                break;
+        }
+        int pressed_key = util_read_key();
+        switch (pressed_key)
+        {
+            // Freccia SU: va all'elemento precedente (con carosello circolare se arriva a 0)
+            case UTIL_KEY_DOWN:
+                switch (selected_field)
+                {
+                    case FIELD_DAY:
+                        if (selected_day - 1 >= 0) {
+                            selected_day--;
+                        } else {
+                            selected_day = util_get_month_days(selected_month, selected_year);
+                        }
+                        break;
+                    case FIELD_MONTH:
+                        if (selected_month - 1 >= 0) {
+                            selected_month--;
+                        } else {
+                            selected_month = 11;
+                        }
+                        // Aggiusta il numero di giorni del mese
+                        if (selected_day > util_get_month_days(selected_month, selected_year)) {
+                            selected_day = util_get_month_days(selected_month, selected_year);
+                        }
+                        break;
+                    case FIELD_YEAR:
+                        if (selected_year - 1 >= 1900)
+                        {
+                            selected_year--;
+                        }
+                        else
+                            selected_year = 9999;
+                        // Aggiusta il numero di giorni del mese
+                        if (selected_day > util_get_month_days(selected_month, selected_year)) {
+                            selected_day = util_get_month_days(selected_month, selected_year);
+                        }
+                        break;
+                }
+                break;
+            // Freccia GIÙ: va all'elemento successivo (ritorna a 0 se supera il limite)
+            case UTIL_KEY_UP:
+                switch (selected_field)
+                {
+                    case FIELD_DAY:
+                        if (selected_day + 1 <= util_get_month_days(selected_month, selected_year)) {
+                            selected_day++;
+                        } else {
+                            selected_day = 0;
+                        }
+                        break;
+                    case FIELD_MONTH:
+                        if (selected_month + 1 <= 11) {
+                            selected_month++;
+                        } else {
+                            selected_month = 0;
+                        }
+                        // Aggiusta il numero di giorni del mese
+                        if (selected_day > util_get_month_days(selected_month, selected_year)) {
+                            selected_day = util_get_month_days(selected_month, selected_year);
+                        }
+                        break;
+                    case FIELD_YEAR:
+                        if (selected_year + 1 <= 9999) {
+                            selected_year++;
+                        } else {
+                            selected_year = 1900;
+                        }
+                        // Aggiusta il numero di giorni del mese
+                        if (selected_day > util_get_month_days(selected_month, selected_year)) {
+                            selected_day = util_get_month_days(selected_month, selected_year);
+                        }
+                        break;
+                }
+                break;
+
+            case UTIL_KEY_RIGHT:
+                if (selected_field + 1 <= FIELD_YEAR) {
+                    selected_field++;
+                } else {
+                    selected_field = FIELD_DAY;
+                }
+                break;
+            case UTIL_KEY_LEFT:
+                if (selected_field - 1 >= 0)
+                {
+                    selected_field--;
+                }
+                else
+                    selected_field = FIELD_YEAR;
+                break;
+            case UTIL_KEY_ENTER:
+                loop = false;
+                break;
+
+            default:
+                break;
+        }
+        fflush(stdout);
+    }
+    *day = selected_day;
+    *month = selected_month;
+    *year = selected_year;
+}
+
+
+void ui_print_request_summary(
+    const char* request_code,
+    const char* client_name,
+    const char* device_type,
+    const char* description,
+    const char* priority,
+    double estimated_cost,
+    const char* opening_date)
+{
+    // Definisce stringhe di fallback se i dati non sono ancora stati inseriti
+    const char* r_code   = (request_code != NULL && strlen(request_code) > 0) ? request_code : "...";
+    const char* c_name   = (client_name != NULL && strlen(client_name) > 0)   ? client_name   : "...";
+    const char* d_type   = (device_type != NULL && strlen(device_type) > 0)   ? device_type   : "...";
+    const char* prio     = (priority != NULL && strlen(priority) > 0)         ? priority      : "...";
+    const char* o_date   = (opening_date != NULL && strlen(opening_date) > 0) ? opening_date  : "...";
+
+    // Buffer per il costo stimato
+    char cost_buffer[UTIL_FLOAT_PARSER_BUFFER_SIZE];
+    if (estimated_cost >= 0) {
+        util_parse_double_to_string(cost_buffer, estimated_cost, "€");
+    } else {
+        strcpy(cost_buffer, "N/A");
+    }
+
+    // Buffer per la descrizione con controllo dinamico sui tre puntini
+    char desc_buffer[DESCRIPTION_BUFFER_SIZE];
+    if (description != NULL && strlen(description) > 0) {
+        if (strlen(description) > DESCRIPTION_BUFFER_SIZE) {
+            /**
+             * Salva la stringa dentro il buffer, troncandola se è troppo lunga ed aggiungendo in caso i 3 puntini
+             * */
+            snprintf(desc_buffer, sizeof(desc_buffer), "\"%.*s...\"", DESCRIPTION_BUFFER_SIZE+6, description);
+        } else {
+            // La tiene integra se è corta
+            snprintf(desc_buffer, sizeof(desc_buffer), "\"%s\"", description);
+        }
+    } else {
+        strcpy(desc_buffer, "[ XXX ]");
+    }
+
+    // Stampa UI
+    printf("\n");
+    printf("  " _ANSI_COLOR_PRIMARY "📝 RIEPILOGO NUOVA RICHIESTA" _ANSI_COLOR_STYLE_RESET "\n");
+    printf("  ├─────────────────────────────────────────────────\n");
+
+    printf("  ├── %-20s %s\n", "Codice Richiesta:", r_code);
+    printf("  ├── %-20s %s\n", "Cliente:", c_name);
+    printf("  ├── %-20s %s\n", "Dispositivo:", d_type);
+    printf("  ├── %-21s %s\n", "Priorità:", prio);
+    printf("  ├── %-20s %s\n", "Costo Stimato:", cost_buffer);
+    printf("  ├── %-20s %s\n", "Data Apertura:", o_date);
+    printf("  │\n");
+    printf("  ├─── " _ANSI_STYLE_FAINT "Descrizione Problema:" _ANSI_COLOR_STYLE_RESET "\n");
+    printf("  └─── " _ANSI_STYLE_ITALIC "%s" _ANSI_COLOR_STYLE_RESET "\n", desc_buffer);
+    fflush(stdout);
+}
 
 
 

@@ -106,5 +106,16 @@
     #define _ANSI_COLOR_TERTIARY    "\x1b[90m"   // Neutro | Grigio
     #define _ANSI_BG_SELECTED "\x1b[30;43m"  // Per testo selezionato
 
+
+    /**
+     * @brief Dimensione massima gestibile dalla ui per l'allocazione della descrizione di una richiesta
+     */
+    #define DESCRIPTION_BUFFER_SIZE 256
+
+    /**
+     * @brief Dimensione massima gestibile dalla ui per l'allocazione del nome del cliente
+     */
+    #define NAME_BUFFER_SIZE 128
+
 #endif
 

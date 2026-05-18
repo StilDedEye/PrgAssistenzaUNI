@@ -126,13 +126,13 @@ void launch_leaf_search_by_code(RequestList *requestList)
 
         char inputBuffer[UI_INPUT_BUFFER_SIZE];
         // Chiede all'utente di inserire un codice di richiesta da cercare, facendo gli appositi controlli
-        ui_get_input_string("\nInserisci il codice della richiesta da cercare: ", inputBuffer, UI_INPUT_BUFFER_SIZE);
+        ui_get_input_string("\nInserisci il codice della richiesta da cercare", inputBuffer, UI_INPUT_BUFFER_SIZE);
 
         // Converte la stringa in maiuscolo
         strupr(inputBuffer);
         // Ordina il vettore di richieste in modo crescente per codice, in modo da poter applicare la ricerca dicotomica
-        //TODO Cambiare parametro sorting
-        merge_sort(requestList->requests, 0, requestList->count - 1, sort_by_client_name, CRESCENT_SORTING);
+
+        merge_sort(requestList->requests, 0, requestList->count - 1, sort_by_request_id, CRESCENT_SORTING);
 
         // Filtra le richieste, salvando in una nuova requestList locale il risultato dell'operazione
         RequestList *filteredRequestsList = search_by_request_id(requestList, inputBuffer);
@@ -220,7 +220,7 @@ void launch_leaf_sorting(RequestList *requestList)
                         selected_column_index = 7;
                         break;
                     case 5:
-                        request_list_sort(requestList, sort_by_priority, order == 0 ? DESCENT_SORTING : CRESCENT_SORTING);
+                        request_list_sort(requestList, sort_by_creation_date, order == 0 ? DESCENT_SORTING : CRESCENT_SORTING);
                         selected_column_index = 9;
                         break;
                     default:
@@ -248,9 +248,100 @@ void launch_subtree_manage(RequestList *requestList)
         true,
         "Home > Gestione e Modifica Richieste",
         requestList,
-        MENU_ROOT_SUBTREES,
+        MENU_MANAGE_SUBTREES,
         sizeof(MENU_MANAGE_SUBTREES) / sizeof(char *),
         MENU_MANAGE_ACTIONS,
         sizeof(MENU_MANAGE_ACTIONS) / sizeof(char *)
     );
+}
+void launch_leaf_insert_request(RequestList* requestList)
+{
+    ui_clear_terminal();
+
+    char name_buffer[NAME_BUFFER_SIZE];
+    char desc_buffer[DESCRIPTION_BUFFER_SIZE];
+    char buffer_date[UTIL_DATE_PARSER_BUFFER_SIZE];
+    int index_of_selected_device = 0;
+    int index_of_selected_priority = 0;
+    double estimated_cost = -1.0;
+    int day = 0, month = 0, year = 0;
+    struct tm request_date = {0};
+
+
+    ui_print_menu_path("Home > Gestione e Modifica Richieste > Inserisci nuova richiesta");
+
+    // TODO Mettere numero stimato prossima richiesta IN AUTOMATICO
+    // TODO SISTEMARE INSERIMENTO SOTTO CON IL CODICE GIUSTO
+    ui_print_request_summary("RQ-* TODO",NULL,NULL,NULL,NULL,VAL_UNDEFINED,NULL);
+
+
+    // Prende il nome del cliente dall'utente
+    ui_get_input_string("\nInserisci il nome del cliente", name_buffer, NAME_BUFFER_SIZE);
+    ui_clear_terminal();
+    ui_print_menu_path("Home > Gestione e Modifica Richieste > Inserisci nuova richiesta");
+    ui_print_request_summary("RQ-* TODO",name_buffer,NULL,NULL,NULL,VAL_UNDEFINED,NULL);
+
+    printf("\n");
+    // Prende il tipo di device
+    printf("" _ANSI_STYLE_FAINT _ANSI_COLOR_PRIMARY "([↑↓] Scorri • [Enter] Conferma) " _ANSI_COLOR_STYLE_RESET "\n\n");
+    index_of_selected_device = ui_prompt_selection("Seleziona il tipo di dispositivo", deviceNames, sizeof(deviceNames) / sizeof(char *));
+    ui_clear_terminal();
+    ui_print_menu_path("Home > Gestione e Modifica Richieste > Inserisci nuova richiesta");
+    ui_print_request_summary("RQ-* TODO",name_buffer,deviceNames[index_of_selected_device],NULL,NULL,VAL_UNDEFINED,NULL);
+
+    printf("\n");
+    // Prende la descrizione
+    ui_get_input_string("Inserisci la descrizione della richiesta", desc_buffer, DESCRIPTION_BUFFER_SIZE);
+    ui_clear_terminal();
+    ui_print_menu_path("Home > Gestione e Modifica Richieste > Inserisci nuova richiesta");
+    ui_print_request_summary("RQ-* TODO",name_buffer,deviceNames[index_of_selected_device],desc_buffer,NULL,VAL_UNDEFINED,NULL);
+
+    printf("\n");
+    // Prende la priorita'
+    printf("" _ANSI_STYLE_FAINT _ANSI_COLOR_PRIMARY "([↑↓] Scorri • [Enter] Conferma) " _ANSI_COLOR_STYLE_RESET "\n\n");
+    index_of_selected_priority = ui_prompt_selection("Seleziona la priorita' della richiesta", priorityNames, sizeof(priorityNames) / sizeof(char *));
+    ui_clear_terminal();
+    ui_print_menu_path("Home > Gestione e Modifica Richieste > Inserisci nuova richiesta");
+    ui_print_request_summary("RQ-* TODO",name_buffer,deviceNames[index_of_selected_device],desc_buffer,priorityNames[index_of_selected_priority],VAL_UNDEFINED,NULL);
+
+    // Prende il costo stimato
+    do
+    {
+        printf("\n");
+        printf(_ANSI_STYLE_FAINT "%s: " _ANSI_COLOR_STYLE_RESET, "Inserisci il costo stimato in € ");
+        scanf("%lf", &estimated_cost);
+        if (estimated_cost < 0)
+        {
+            ui_print_error("Il costo stimato DEVE essere numerico e positivo. Riprova.");
+            util_clear_input_buffer();
+            printf("\n");
+        }
+    } while (estimated_cost < 0);
+    ui_clear_terminal();
+    ui_print_menu_path("Home > Gestione e Modifica Richieste > Inserisci nuova richiesta");
+    ui_print_request_summary("RQ-* TODO",name_buffer,deviceNames[index_of_selected_device],desc_buffer,priorityNames[index_of_selected_priority], estimated_cost,NULL);
+
+    printf("\n");
+    // Prende la data
+    printf(_ANSI_STYLE_FAINT "%s: " _ANSI_COLOR_STYLE_RESET, "([↑↓ / ←→] Cambia / Seleziona • [Enter] Conferma)");
+    ui_prompt_date ("Inserici la data di apertura: ", &day, &month, &year);
+    request_date =  build_date(++day, month, year);
+    ui_clear_terminal();
+    ui_print_menu_path("Home > Gestione e Modifica Richieste > Inserisci nuova richiesta");
+    ui_print_request_summary("RQ-* TODO",name_buffer,deviceNames[index_of_selected_device],desc_buffer,priorityNames[index_of_selected_priority], estimated_cost,util_parse_date_to_string(buffer_date, request_date));
+
+    // Inserisce nuova richiesta nel vettore
+    Client* new_client = create_client("CL-*", name_buffer);
+    Request* new_request = create_request("RQ-4", new_client, index_of_selected_device, index_of_selected_priority, desc_buffer, estimated_cost, VAL_UNDEFINED, request_date);
+    if (add_request(requestList, new_request) == 0)
+        ui_print_success("Richiesta inserita con successo!");
+    else
+        ui_print_error("Si è verificato un errore durante l'inserimento della richiesta. Riprova.");
+
+    // Pulisce il terminale
+    ui_wait_for_keypress(_ANSI_STYLE_UNDERLINE"\n⮌ Premere enter per tornare indietro", UTIL_KEY_ENTER, UTIL_KEY_LEFT);
+    ui_clear_terminal();
+    util_clear_input_buffer();
+
+
 }

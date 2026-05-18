@@ -60,6 +60,7 @@ static const char* SORTING_ORDERS[] = {
 
 // SUBTREE GESTIONE E MODIFICA RICHIESTE
 void launch_subtree_manage(RequestList* requestList);
+    void launch_leaf_insert_request(RequestList* requestList);
 
 
 static const char* MENU_MANAGE_SUBTREES[] = {
@@ -68,7 +69,7 @@ static const char* MENU_MANAGE_SUBTREES[] = {
     "Chiudi Richiesta Completata",
 };
 static const ActionFunc MENU_MANAGE_ACTIONS[] = {
-    //TODO
+    launch_leaf_insert_request
 };
 
 

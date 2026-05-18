@@ -37,7 +37,7 @@ void destroy_request_list(RequestList* requestList);
  * @brief Aggiunge una nuova richiesta alla lista.
  * @param requestList Lista a cui aggiungere la richiesta.
  * @param request Richiesta da aggiungere alla lista.
- * @return 0 se l'aggiunta è avvenuta con successo, -1 in caso di errore (ad esempio, se la lista è piena).
+ * @return 0 se l'aggiunta è avvenuta con successo, -1 in caso di errore (ad esempio, se la lista è nulla).
  */
 int add_request(RequestList* requestList, Request* request);
 
