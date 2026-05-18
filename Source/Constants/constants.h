@@ -8,6 +8,7 @@
 /**
  *
  * @brief Enum di tipi di dispositivi supportati per le richieste di assistenza.
+ * @details DEVICE_COUNT rappresenta il numero di valori dell'enum
  *
  */
 typedef enum {
@@ -17,7 +18,8 @@ typedef enum {
     DESKTOP,
     CONSOLE,
     PRINTER,
-    MORE
+    MORE,
+    DEVICE_COUNT
 } Device;
 
 static const char* deviceNames[] = {"Laptop", "Smartphone", "Tablet", "Desktop", "Console", "Stampante", "Altro"};
@@ -25,15 +27,16 @@ static const char* deviceNames[] = {"Laptop", "Smartphone", "Tablet", "Desktop",
 
 /**
  *
- * @brief Enum di tipi di priorità assegnabili alle richieste di assistenza.
- *
+ * @brief Enum di tipi di priorità assegnabili alle richieste di assistenza.ù
+ * @details PRIORITY_COUNT rappresenta il numero di valori dell'enum
  */
 typedef enum {
     HIGHEST,
     HIGH,
     MEDIUM,
     LOW,
-    LOWEST
+    LOWEST,
+    PRIORITY_COUNT
 } Priority;
 
 static const char* priorityNames[] = {"Massima", "Alta", "Media", "Bassa", "Minima"};
@@ -42,13 +45,14 @@ static const char* priorityNames[] = {"Massima", "Alta", "Media", "Bassa", "Mini
 /**
  *
  * @brief Enum di stati di avanzamento associabili alle richieste di assistenza.
- *
+ * @details STATUS_COUNT rappresenta il numero di valori dell'enum
  */
 typedef enum {
     PENDING,
     IN_PROGRESS,
     COMPLETED,
-    CANCELLED
+    CANCELLED,
+    STATUS_COUNT
 } RequestStatus;
 
 static const char* requestStatusNames[] = {"In Attesa", "In Lavorazione", "Completata", "Cancellata"};
